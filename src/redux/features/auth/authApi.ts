@@ -1,150 +1,145 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { getBaseUrl } from "@/utils/getBaseUrl";
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
-export type userRole = "user" | "admin";
+export type UserRole = "user" | "admin";
 
 export interface TUser {
-    _id: string;
-    username: string;
-    email: string;
-    password?: string;
-    otpCode?: string;
-    otpExpire?: Date;
-    otpRequestedAt?: Date;
-    isVerified?: boolean;
-    passwordResetToken?: string;
-    passwordResetExpire?: Date;
-    passwordChangedAt?: Date;
-    role?: userRole;
-    phone?: string;
-    nidcard?: string;
+  _id: string;
+  name: string;
+  email: string;
+  password?: string;
+  otpCode?: string;
+  otpExpire?: Date;
+  otpRequestedAt?: Date;
+  isVerified?: boolean;
+  passwordResetToken?: string;
+  passwordResetExpire?: Date;
+  passwordChangedAt?: Date;
+  role?: UserRole;
+  phone?: string;
+  nid?: string;
 }
 
-// user response type
-export interface userResponse {
-    success: string;
-    message: string;
-    user: TUser;
+// Generic API response
+export interface ApiResponse<T = any> {
+  success: boolean;
+  message: string;
+  data?: T;
 }
 
-// register type
-export interface userRegisterResponse{
-    username: string;
-    email: string;
-    password: string;
-    phone: number;
-    nidcard: number;
+export interface UserRegisterPayload {
+  name: string;
+  email: string;
+  password: string;
+  phone: string;
+  nid: string;
 }
 
-// register otp type
-export interface registerOtp{
-    email: string;
-    otpCode: string;
+export interface ActivateUserPayload {
+  token: string;
+  activationCode: string;
 }
 
-// login type
-export interface userLogin{
-    email: string;
-    password: string;
+export interface UserLoginPayload {
+  email: string;
+  password: string;
 }
 
-// login & resend otp type
-export interface loginOtp{
-    email: string;
+export interface ForgotPasswordPayload {
+  email: string;
 }
 
-// forgot password type
-export interface forgotPassword{
-    email: string;
+export interface ResetPasswordPayload {
+  otp: string;
+  newPassword: string;
 }
 
-// reset passord type
-export interface resetPassword{
-    email: string;
-    otpCode: string;
-    newPassword: string;
+export interface UpdateProfilePayload {
+  name?: string;
+  phone?: string;
 }
 
-export const authApi = createApi ({
-    reducerPath: 'authApi',
-    baseQuery: fetchBaseQuery({
-        baseUrl: `${getBaseUrl()}/api/auth`,
-        credentials: "include"
+export const authApi = createApi({
+  reducerPath: "authApi",
+  baseQuery: fetchBaseQuery({
+    baseUrl: `${getBaseUrl()}/api/auth`,
+    credentials: "include",
+  }),
+  tagTypes: ["Auth"],
+  endpoints: (builder) => ({
+    register: builder.mutation<ApiResponse, UserRegisterPayload>({
+      query: (newUser) => ({
+        url: "/register",
+        method: "POST",
+        body: newUser,
+      }),
+      invalidatesTags: ["Auth"],
     }),
-    tagTypes: ["Auth"],
-    endpoints: (builder) => ({
-        // register
-        register: builder.mutation<userResponse, userRegisterResponse>({
-            query: (newUser) => ({
-                url: '/register',
-                method: 'POST',
-                body: newUser
-            }),
-            invalidatesTags: ["Auth"]
-        }),
-        // verify register otp
-        verifyRegisterOtp: builder.mutation<userResponse, registerOtp>({
-            query: (otp) =>({
-                url: '/verify-register-otp', 
-                method: 'POST',
-                body: otp
-            }),
-            invalidatesTags: ["Auth"],
-        }),
-        // login (step one send otp)
-        login: builder.mutation<userResponse, userLogin>({
-            query: (data) =>({
-                url: '/login',
-                method: 'POST',
-                body: data
-            }),
-            invalidatesTags: ["Auth"],
-        }),
-        // verify otp ( return token + user )
-        verifyLoginOtp: builder.mutation<userResponse, loginOtp>({
-            query: (data) =>({
-                url: '/verify-login-otp',
-                method: 'POST',
-                body: data
-            }),
-            invalidatesTags: ["Auth"],
-        }),
-        // resend login otp
-        resendLoginOtp: builder.mutation<userResponse, loginOtp>({
-            query: (data) => ({
-                url: '/resend-login-otp',
-                method: 'POST',
-                body: data,
-            }),
-            invalidatesTags: ["Auth"],
-        }),
-        // forgot password
-        forgotPassword: builder.mutation<userResponse, forgotPassword>({
-            query: (data) =>({
-                url: '/forgot-password',
-                method: 'POST',
-                body: data,
-            }),
-            invalidatesTags: ["Auth"],
-        }),
-        // reset password
-        resetPassword: builder.mutation<userResponse, resetPassword>({
-            query: (data) =>({
-                url: '/reset-password',
-                method: 'POST',
-                body: data
-            }),
-            invalidatesTags: ["Auth"],
-        }),
-        // logout
-        logout: builder.mutation<userResponse, void>({
-            query: () =>({
-                url: '/logout',
-                method: 'POST',
-            }),
-            invalidatesTags: ["Auth"],
-        }),
-    })
+    activateUser: builder.mutation<ApiResponse, ActivateUserPayload>({
+      query: (data) => ({
+        url: "/activate-user",
+        method: "POST",
+        body: data,
+      }),
+      invalidatesTags: ["Auth"],
+    }),
+    login: builder.mutation<ApiResponse, UserLoginPayload>({
+      query: (data) => ({
+        url: "/login",
+        method: "POST",
+        body: data,
+      }),
+      invalidatesTags: ["Auth"],
+    }),
+    refreshToken: builder.mutation<ApiResponse, void>({
+      query: () => ({
+        url: "/refresh-token",
+        method: "POST",
+      }),
+      invalidatesTags: ["Auth"],
+    }),
+    forgotPassword: builder.mutation<ApiResponse, ForgotPasswordPayload>({
+      query: (data) => ({
+        url: "/forgot-password",
+        method: "POST",
+        body: data,
+      }),
+      invalidatesTags: ["Auth"],
+    }),
+    resetPassword: builder.mutation<ApiResponse, ResetPasswordPayload>({
+      query: (data) => ({
+        url: "/reset-password",
+        method: "POST",
+        body: data,
+      }),
+      invalidatesTags: ["Auth"],
+    }),
+    updateProfile: builder.mutation<ApiResponse<TUser>, UpdateProfilePayload>({
+      query: (data) => ({
+        url: "/update-profile",
+        method: "PATCH",
+        body: data,
+      }),
+      invalidatesTags: ["Auth"],
+    }),
+    logout: builder.mutation<ApiResponse, void>({
+      query: () => ({
+        url: "/logout",
+        method: "POST",
+      }),
+      invalidatesTags: ["Auth"],
+    }),
+  }),
 });
 
-export const { useRegisterMutation, useVerifyRegisterOtpMutation, useLoginMutation, useVerifyLoginOtpMutation, useResendLoginOtpMutation, useForgotPasswordMutation, useLogoutMutation } = authApi;
+export const {
+  useRegisterMutation,
+  useActivateUserMutation,
+  useLoginMutation,
+  useRefreshTokenMutation,
+  useForgotPasswordMutation,
+  useResetPasswordMutation,
+  useUpdateProfileMutation,
+  useLogoutMutation,
+} = authApi;

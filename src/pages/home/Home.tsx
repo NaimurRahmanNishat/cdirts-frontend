@@ -1,8 +1,11 @@
+import Loader from "@/components/shared/Loader";
 
 
 const Home = () => {
   return (
-    <div>Home</div>
+    <div className="min-h-screen">
+      <Loader/>
+    </div>
   )
 }
 
