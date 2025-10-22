@@ -1,64 +1,46 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
-import type { TUser } from "./authApi";
+import type { TUser } from "@/types";
 
-type AuthState = {
+export interface AuthState {
   user: TUser | null;
+  isAuthenticated: boolean;
+  loading: boolean;
+}
+
+const savedUser = localStorage.getItem("user");
+
+const initialState: AuthState = {
+  user: savedUser ? JSON.parse(savedUser) : null,
+  isAuthenticated: !!savedUser,
+  loading: false,
 };
 
-const loadUserFromLocalStorage = (): AuthState => {
-  try {
-    const stored = localStorage.getItem("user");
-    if (!stored) return { user: null };
-    const parsed = JSON.parse(stored) as TUser;
-    return { user: parsed || null };
-  } catch (error: any) {
-    return { user: null };
-  }
-};
-
-// sanitize user object by removing sensitive fields
-const sanitizeUser = (user: Partial<TUser> | null): TUser | null => {
-  if (!user) return null;
-
-  const cloned: any = { ...user };
-  const forbiddenRegex = /(password|pass|token|refresh|otp|secret|nid)/i;
-
-  Object.keys(cloned).forEach((key) => {
-    if (forbiddenRegex.test(key)) {
-      delete cloned[key];
-    }
-  });
-  return cloned as TUser;
-};
-
-const initialState: AuthState = loadUserFromLocalStorage();
 
 const authSlice = createSlice({
   name: "auth",
   initialState,
   reducers: {
-    // set user and sanitize sensitive fields
-    setUser: (state, action: PayloadAction<{ user: Partial<TUser> | null }>) => {
-      const sanitized = sanitizeUser(action.payload.user ?? null);
-      state.user = sanitized;
-      if (sanitized) {
-        localStorage.setItem("user", JSON.stringify(sanitized));
+    setUser: (state, action: PayloadAction<TUser | null>) => {
+      state.user = action.payload;
+      state.isAuthenticated = !!action.payload;
+      if (action.payload) {
+        localStorage.setItem("user", JSON.stringify(action.payload));
       } else {
         localStorage.removeItem("user");
       }
     },
+    // logout 
     logout: (state) => {
       state.user = null;
+      state.isAuthenticated = false;
       localStorage.removeItem("user");
     },
-    // optional: clear local storage without changing redux state
-    clearLocalUser: () => {
-      localStorage.removeItem("user");
+    setLoading: (state, action: PayloadAction<boolean>) => {
+      state.loading = action.payload;
     },
   },
 });
 
-export const { setUser, logout, clearLocalUser } = authSlice.actions;
+export const { setUser, logout, setLoading } = authSlice.actions;
+
 export default authSlice.reducer;

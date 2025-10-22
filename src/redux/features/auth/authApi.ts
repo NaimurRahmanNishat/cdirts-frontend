@@ -1,82 +1,79 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import type { 
+  ActivateUserPayload, 
+  ActivateUserResponse, 
+  ForgotPasswordPayload, 
+  ForgotPasswordResponse, 
+  LoginResponse, 
+  LogoutResponse, 
+  RefreshTokenResponse, 
+  RegisterResponse, 
+  ResetPasswordPayload, 
+  ResetPasswordResponse, 
+  SocialAuthPayload, 
+  SocialAuthResponse, 
+  UpdateProfilePayload, 
+  UpdateProfileResponse, 
+  UserLoginPayload, 
+  UserRegisterPayload 
+} from "@/types";
 import { getBaseUrl } from "@/utils/getBaseUrl";
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
+import { setUser, logout } from "@/redux/features/auth/authSlice";
 
-export type UserRole = "user" | "admin";
+const baseQuery = fetchBaseQuery({
+  baseUrl: `${getBaseUrl()}/api/auth`,
+  credentials: "include",
+});
 
-export interface TUser {
-  _id: string;
-  name: string;
-  email: string;
-  password?: string;
-  otpCode?: string;
-  otpExpire?: Date;
-  otpRequestedAt?: Date;
-  isVerified?: boolean;
-  passwordResetToken?: string;
-  passwordResetExpire?: Date;
-  passwordChangedAt?: Date;
-  role?: UserRole;
-  phone?: string;
-  nid?: string;
-}
+const baseQueryWithReauth: typeof baseQuery = async (args, api, extraOptions) => {
+  let result = await baseQuery(args, api, extraOptions);
 
-// Generic API response
-export interface ApiResponse<T = any> {
-  success: boolean;
-  message: string;
-  data?: T;
-}
+  if (result?.error && (result.error as any).status === 401) {
+    console.warn("Access token expired, attempting refresh...");
+    
+    const refreshResult = await baseQuery(
+      { url: "/refresh-token", method: "POST" },
+      api,
+      extraOptions
+    );
 
-export interface UserRegisterPayload {
-  name: string;
-  email: string;
-  password: string;
-  phone: string;
-  nid: string;
-}
+    if (refreshResult?.data) {
+      const refreshData = refreshResult.data as RefreshTokenResponse;
+      
+      if (refreshData.success && refreshData.data) {
+        api.dispatch(setUser(refreshData.data));
 
-export interface ActivateUserPayload {
-  token: string;
-  activationCode: string;
-}
-
-export interface UserLoginPayload {
-  email: string;
-  password: string;
-}
-
-export interface ForgotPasswordPayload {
-  email: string;
-}
-
-export interface ResetPasswordPayload {
-  otp: string;
-  newPassword: string;
-}
-
-export interface UpdateProfilePayload {
-  name?: string;
-  phone?: string;
-}
+        result = await baseQuery(args, api, extraOptions);
+      } else {
+        console.error("Refresh token response invalid");
+        api.dispatch(logout());
+      }
+    } else {
+      console.error("Refresh token failed, forcing logout");
+      api.dispatch(logout());
+    }
+  }
+  return result;
+};
 
 export const authApi = createApi({
   reducerPath: "authApi",
-  baseQuery: fetchBaseQuery({
-    baseUrl: `${getBaseUrl()}/api/auth`,
-    credentials: "include",
-  }),
-  tagTypes: ["Auth"],
+  baseQuery: baseQueryWithReauth,
+  tagTypes: ["Auth", "User"],
   endpoints: (builder) => ({
-    register: builder.mutation<ApiResponse, UserRegisterPayload>({
-      query: (newUser) => ({
+    // Register user
+    register: builder.mutation<RegisterResponse, UserRegisterPayload>({
+      query: (userData) => ({
         url: "/register",
         method: "POST",
-        body: newUser,
+        body: userData,
       }),
       invalidatesTags: ["Auth"],
     }),
-    activateUser: builder.mutation<ApiResponse, ActivateUserPayload>({
+
+    // Activate user account
+    activateUser: builder.mutation<ActivateUserResponse, ActivateUserPayload>({
       query: (data) => ({
         url: "/activate-user",
         method: "POST",
@@ -84,62 +81,84 @@ export const authApi = createApi({
       }),
       invalidatesTags: ["Auth"],
     }),
-    login: builder.mutation<ApiResponse, UserLoginPayload>({
-      query: (data) => ({
+
+    // Login user 
+    login: builder.mutation<LoginResponse, UserLoginPayload>({
+      query: (credentials) => ({
         url: "/login",
         method: "POST",
-        body: data,
+        body: credentials,
       }),
-      invalidatesTags: ["Auth"],
+      invalidatesTags: ["Auth", "User"],
     }),
-    refreshToken: builder.mutation<ApiResponse, void>({
+
+    // Refresh access token
+    refreshToken: builder.mutation<RefreshTokenResponse, void>({
       query: () => ({
         url: "/refresh-token",
         method: "POST",
+        credentials: "include",
       }),
       invalidatesTags: ["Auth"],
     }),
-    forgotPassword: builder.mutation<ApiResponse, ForgotPasswordPayload>({
+
+    // Social authentication
+    socialAuth: builder.mutation<SocialAuthResponse, SocialAuthPayload>({
+      query: (data) => ({
+        url: "/social-auth",
+        method: "POST",
+        body: data,
+      }),
+      invalidatesTags: ["Auth", "User"],
+    }),
+
+    // Forgot password
+    forgotPassword: builder.mutation<ForgotPasswordResponse, ForgotPasswordPayload>({
       query: (data) => ({
         url: "/forgot-password",
         method: "POST",
         body: data,
       }),
-      invalidatesTags: ["Auth"],
     }),
-    resetPassword: builder.mutation<ApiResponse, ResetPasswordPayload>({
+
+    // Reset password
+    resetPassword: builder.mutation<ResetPasswordResponse, ResetPasswordPayload>({
       query: (data) => ({
         url: "/reset-password",
         method: "POST",
         body: data,
       }),
-      invalidatesTags: ["Auth"],
     }),
-    updateProfile: builder.mutation<ApiResponse<TUser>, UpdateProfilePayload>({
-      query: (data) => ({
-        url: "/update-profile",
-        method: "PATCH",
-        body: data,
-      }),
-      invalidatesTags: ["Auth"],
-    }),
-    logout: builder.mutation<ApiResponse, void>({
+
+    // Logout user
+    logout: builder.mutation<LogoutResponse, void>({
       query: () => ({
         url: "/logout",
         method: "POST",
       }),
       invalidatesTags: ["Auth"],
     }),
+
+    // Update user profile
+    updateProfile: builder.mutation<UpdateProfileResponse, UpdateProfilePayload>({
+      query: (data) => ({
+        url: "/update-profile",
+        method: "PATCH",
+        body: data,
+      }),
+      invalidatesTags: ["User"],
+    }),
   }),
 });
 
-export const {
-  useRegisterMutation,
-  useActivateUserMutation,
-  useLoginMutation,
-  useRefreshTokenMutation,
-  useForgotPasswordMutation,
-  useResetPasswordMutation,
-  useUpdateProfileMutation,
-  useLogoutMutation,
+export const { 
+  useRegisterMutation, 
+  useActivateUserMutation, 
+  useLoginMutation, 
+  useRefreshTokenMutation, 
+  useSocialAuthMutation, 
+  useForgotPasswordMutation, 
+  useResetPasswordMutation, 
+  useLogoutMutation, 
+  useUpdateProfileMutation 
 } = authApi;
