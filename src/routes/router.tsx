@@ -72,7 +72,7 @@ const router = createBrowserRouter([
         element: <Others />,
       },
       {
-        path: "/:issueId",
+        path: "/issues/:issueId",
         element: <SinglePage />,
       }
     ],

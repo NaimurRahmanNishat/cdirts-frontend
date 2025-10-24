@@ -1,7 +1,8 @@
 import Loading from "@/components/shared/Loading";
 import { IssueCategory } from "../../constants/divisions";
+import { Link } from "react-router-dom";
+import type { Issue } from "@/types";
 import { useGetAllIssuesQuery } from "@/redux/features/issue/issuApi";
-
 
 const Watar = () => {
   const { data, isLoading, error } = useGetAllIssuesQuery({
@@ -10,24 +11,50 @@ const Watar = () => {
     limit: 10,
   });
 
-  if (isLoading) return <Loading/>;
-  if (error) return <p>Error loading water issues.</p>;
+  if (isLoading) return <Loading />;
+  if (error)
+    return (
+      <p className="text-red-500 text-center">Error loading water issues.</p>
+    );
 
   return (
     <div className="container mx-auto py-8 px-4">
       <h1 className="text-2xl font-bold mb-6 text-blue-700">Water Issues</h1>
+
       {data?.issues?.length ? (
-        <ul className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {data.issues.map((issue) => (
-            <li key={issue._id} className="p-4 bg-white shadow rounded-lg">
-              <h2 className="text-lg font-semibold">{issue.title}</h2>
-              <p className="text-sm text-gray-500">{issue.description}</p>
-              <img src={issue.images[0].url} alt="" />
-            </li>
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {data?.issues?.map((issue: Issue) => (
+            <Link to={`/issues/${issue._id}`} key={issue._id}>
+              <div className="bg-white shadow-md rounded-xl border p-4 hover:shadow-lg transition">
+                <h2 className="text-lg font-semibold text-gray-800 mb-2">
+                  {issue.title}
+                </h2>
+                <p className="text-gray-600 text-sm line-clamp-3">
+                  {issue.description}
+                </p>
+                <p className="text-sm text-gray-500 mt-2">
+                  <strong>Division:</strong> {issue.division}
+                </p>
+                <p className="text-sm text-gray-500">
+                  <strong>Location:</strong> {issue.location}
+                </p>
+                {issue.images?.[0]?.url ? (
+                  <img
+                    src={issue.images[0].url}
+                    alt={issue.title}
+                    className="w-full h-64 object-cover rounded-md mt-3"
+                  />
+                ) : (
+                  <div className="w-full h-64 bg-gray-200 flex items-center justify-center text-gray-500 mt-3 rounded-md">
+                    No image available
+                  </div>
+                )}
+              </div>
+            </Link>
           ))}
-        </ul>
+        </div>
       ) : (
-        <p>No watar issues found.</p>
+        <p className="text-gray-500 text-center">No issues found.</p>
       )}
     </div>
   );

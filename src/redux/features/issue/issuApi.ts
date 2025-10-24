@@ -59,7 +59,7 @@ export const issueApi = createApi({
     // Get single issue by id
     getIssueById: builder.query<IssueByIdResponse, string>({
       query: (issueId) => ({
-        url: `/${issueId}`,
+        url: `/single-issue/${issueId}`,
         method: "GET",
       }),
       providesTags: (_result, _error, id) => [{ type: "Issue", id }],

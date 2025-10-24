@@ -1,7 +1,7 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import Loading from "@/components/shared/Loading";
 import { IssueCategory } from "@/constants/divisions";
 import { useGetAllIssuesQuery } from "@/redux/features/issue/issuApi";
+import type { Issue } from "@/types";
 import { Link } from "react-router-dom";
 
 const ElectricityPage = () => {
@@ -19,8 +19,8 @@ const ElectricityPage = () => {
       <h1 className="text-2xl font-bold mb-6 text-blue-700">Electricity Issues</h1>
 
       {data?.issues?.length ? (
-        <Link to={`/${data.issues[0]._id}`} className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {data.issues.map((issue: any) => (
+        <Link to={`/issues/${data.issues[0]._id}`} className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {data.issues.map((issue: Issue) => (
             <div
               key={issue._id}
               className="bg-white shadow-md rounded-xl border p-4 hover:shadow-lg transition"
@@ -37,6 +37,7 @@ const ElectricityPage = () => {
               <p className="text-sm text-gray-500">
                 <strong>Location:</strong> {issue.location}
               </p>
+              <img src={issue.images[0].url} alt="" className="w-full h-96"/>
             </div>
           ))}
         </Link>
