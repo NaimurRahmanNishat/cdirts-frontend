@@ -21,6 +21,13 @@ import BookingManagement from "@/pages/dashboard/admin/booking-management/Bookin
 import CommissionAndPayment from "@/pages/dashboard/admin/commission/CommissionAndPayment";
 import ReportsAndAnalytics from "@/pages/dashboard/admin/reports/ReportsAndAnalytics";
 import Settings from "@/pages/dashboard/admin/settings/Settings";
+import Gas from "@/pages/gas/Gas";
+import Road from "@/pages/road/Road";
+import Watar from "@/pages/watar/Watar";
+import Others from "@/pages/others/Others";
+import ActivateUser from "@/pages/register/ActivateUser";
+import ElectricityPage from "@/pages/electricity/Electricity";
+import SinglePage from "@/pages/[id]/SinglePage";
 
 const router = createBrowserRouter([
   {
@@ -37,13 +44,41 @@ const router = createBrowserRouter([
         element: <Login />,
       },
       {
+        path: "/register-otp",
+        element: <ActivateUser />,
+      },
+      {
         path: "/register",
         element: <Register />,
       },
+            {
+        path: "/electricity",
+        element: <ElectricityPage />,
+      },
+      {
+        path: "/gas",
+        element: <Gas />,
+      },
+      {
+        path: "/road",
+        element: <Road />,
+      },
+      {
+        path: "/watar",
+        element: <Watar />,
+      },
+      {
+        path: "/others",
+        element: <Others />,
+      },
+      {
+        path: "/:issueId",
+        element: <SinglePage />,
+      }
     ],
   },
   {
-    path: "/dashboard", // parents absolute path
+    path: "/dashboard", 
     element: (
       <ProtectedRoute>
         <DashboardLayout />

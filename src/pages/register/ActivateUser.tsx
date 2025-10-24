@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-
 import { type JSX } from "react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
@@ -11,14 +10,14 @@ import { Loader2, Key } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 
-// --- Zod Schema ---
+// Zod Schema
 const otpSchema = z.object({
   otp: z.string().min(6, "OTP must be 6 digits"),
 });
 
 type OTPFormValues = z.infer<typeof otpSchema>;
 
-// --- Input Component ---
+// Input Component
 interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   icon?: JSX.Element;
 }
@@ -50,7 +49,7 @@ const ActivateUser =() => {
     try {
       const res = await activateUser({ token, activationCode: data.otp }).unwrap();
       if (res.success) {
-        toast.success("User registered successfully!");
+        alert("User registered successfully!");
         localStorage.removeItem("activationToken");
         navigate("/login"); 
       } else {

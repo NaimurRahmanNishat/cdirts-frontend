@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 import { Eye, EyeOff, Lock, Mail, AlertCircle } from "lucide-react";
 import { useAppDispatch } from "@/redux/hooks";
 import { setUser } from "@/redux/features/auth/authSlice";
+import { toast } from "react-toastify";
 
 type LoginInputs = {
   email: string;
@@ -18,23 +19,19 @@ const Login = () => {
   const [errorMessage, setErrorMessage] = useState<string>("");
   const [showPassword, setShowPassword] = useState<boolean>(false);
 
-  // React Hook Form
   const { register, handleSubmit, formState: { errors } } = useForm<LoginInputs>();
 
-  // RTK Query
   const [login, { isLoading: isLoginLoading }] = useLoginMutation();
 
-  // ✅ Fixed: Handle Normal Login
   const onSubmit = async (data: LoginInputs) => {
     try {
-      setErrorMessage(""); // Clear previous errors
+      setErrorMessage(""); 
       const res = await login(data).unwrap();
-      console.log("Login Response: ", res);
       
-      // ✅ FIXED: Backend পাঠায় 'data' property তে, 'user' নয়
       if (res.success && res.data) {
         dispatch(setUser(res.data));
         alert(res.message || "Login Successfully!");
+        toast.success(res.message || "Login Successfully!");
         navigate("/");
       } else {
         setErrorMessage(res.message || "Login failed");

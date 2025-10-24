@@ -5,26 +5,39 @@ import { Link, useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import type { RootState } from "@/redux/store";
 import { toast } from "react-toastify";
+import { useLogoutMutation } from "@/redux/features/auth/authApi";
+import { useDispatch } from "react-redux";
+import { logout } from "@/redux/features/auth/authSlice";
 
 const Header = () => {
   const [menuOpen, setMenuOpen] = useState<boolean>(false);
   const { user } = useSelector((state: RootState) => state.auth);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const [logoutUser] = useLogoutMutation();
 
-  const handleLogout = () => {
-    localStorage.removeItem("user");
-    toast.success("Logout successful!");
-    window.location.reload();
+  const handleLogout = async () => {
+    try {
+      const res = await logoutUser().unwrap();
+      if (res.success) {
+        dispatch(logout());
+        alert(res.message || "Logged out successfully!");
+        navigate("/");
+      }
+    } catch (error) {
+      console.error("Logout failed:", error);
+      toast.error("Logout failed. Try again.");
+    }
   };
 
   const handleProfileClick = () => {
-    if(user?.role === "user") navigate("/dashboard/user");
-    else if(user?.role === "admin") navigate("/dashboard/admin");
+    if (user?.role === "user") navigate("/dashboard/user");
+    else if (user?.role === "admin") navigate("/dashboard/admin");
   };
 
   return (
-    <header className="bg-white shadow-md fixed top-0 left-0 w-full z-50">
-      <div className="container mx-auto flex justify-between items-center px-4 py-3">
+    <header className="bg-white shadow-md sticky top-0 left-0 w-full z-50">
+      <div className="container mx-auto flex justify-between items-center px-4 py-3 h-20">
         {/* Logo */}
         <h1 className="text-3xl font-extrabold tracking-tight">
           <Link
@@ -40,11 +53,25 @@ const Header = () => {
           <Link to="/" className="hover:text-blue-600 transition">
             Home
           </Link>
-          <Link to="/about" className="hover:text-blue-600 transition">
-            About
+          <Link to="/electricity" className="hover:text-blue-600 transition">
+            Electricity
           </Link>
+          <Link to="/gas" className="hover:text-blue-600 transition">
+            Gas
+          </Link>
+          <Link to="/road" className="hover:text-blue-600 transition">
+            Road
+          </Link>
+          <Link to="/watar" className="hover:text-blue-600 transition">
+            Watar
+          </Link>
+          <Link to="/others" className="hover:text-blue-600 transition">
+            Others
+          </Link>
+        </nav>
 
-          {/* Conditional Render */}
+        {/* Conditional Render */}
+        <div className="flex items-center gap-4">
           {user ? (
             <div className="relative group flex items-center gap-2 cursor-pointer">
               {/* User Icon → click to profile */}
@@ -81,7 +108,7 @@ const Header = () => {
               </Link>
             </>
           )}
-        </nav>
+        </div>
 
         {/* Mobile Menu Button */}
         <button
@@ -104,11 +131,39 @@ const Header = () => {
               Home
             </Link>
             <Link
-              to="/about"
+              to="/electricity"
               onClick={() => setMenuOpen(false)}
               className="hover:text-blue-600 transition"
             >
-              About
+              Electricity
+            </Link>
+            <Link
+              to="/gas"
+              onClick={() => setMenuOpen(false)}
+              className="hover:text-blue-600 transition"
+            >
+              Gas
+            </Link>
+            <Link
+              to="/road"
+              onClick={() => setMenuOpen(false)}
+              className="hover:text-blue-600 transition"
+            >
+              Road
+            </Link>
+            <Link
+              to="/watar"
+              onClick={() => setMenuOpen(false)}
+              className="hover:text-blue-600 transition"
+            >
+              Watar
+            </Link>
+            <Link
+              to="/others"
+              onClick={() => setMenuOpen(false)}
+              className="hover:text-blue-600 transition"
+            >
+              Others
             </Link>
 
             {/* Conditional Render for Mobile */}

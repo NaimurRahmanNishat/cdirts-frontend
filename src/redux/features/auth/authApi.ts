@@ -135,6 +135,7 @@ export const authApi = createApi({
       query: () => ({
         url: "/logout",
         method: "POST",
+        credentials: "include",
       }),
       invalidatesTags: ["Auth"],
     }),

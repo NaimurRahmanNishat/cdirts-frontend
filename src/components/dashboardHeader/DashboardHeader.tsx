@@ -7,18 +7,30 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import ProfileCard from "./ProfileCard";
+import { useLogoutMutation } from "@/redux/features/auth/authApi";
+import { useDispatch } from "react-redux";
+import { logout } from "@/redux/features/auth/authSlice";
 
 const DashboardHeader = () => {
   const { user } = useSelector((state: RootState) => state.auth);
   const [menuOpen, setMenuOpen] = useState(false);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const [logoutUser] = useLogoutMutation(); 
 
   // Logout handler
-  const handleLogout = () => {
-    localStorage.removeItem("user");
-    toast.success("Logout successful!");
-    navigate("/");
-    window.location.reload();
+  const handleLogout = async () => {
+    try {
+      const res = await logoutUser().unwrap();
+      if (res.success) {
+        dispatch(logout()); 
+        alert(res.message || "Logged out successfully!");
+        navigate("/"); 
+      }
+    } catch (error) {
+      console.error("Logout failed:", error);
+      toast.error("Logout failed. Try again.");
+    }
   };
 
   return (
