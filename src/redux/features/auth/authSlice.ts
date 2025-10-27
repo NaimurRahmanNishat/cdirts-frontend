@@ -15,7 +15,6 @@ const initialState: AuthState = {
   loading: false,
 };
 
-
 const authSlice = createSlice({
   name: "auth",
   initialState,
@@ -26,14 +25,13 @@ const authSlice = createSlice({
       if (action.payload) {
         localStorage.setItem("user", JSON.stringify(action.payload));
       } else {
-        localStorage.removeItem("user");
+        localStorage.removeItem("user"); //  clear
       }
     },
-    // logout 
     logout: (state) => {
       state.user = null;
       state.isAuthenticated = false;
-      localStorage.removeItem("user");
+      localStorage.removeItem("user"); // logout
     },
     setLoading: (state, action: PayloadAction<boolean>) => {
       state.loading = action.payload;

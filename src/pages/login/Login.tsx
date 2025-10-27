@@ -2,7 +2,7 @@
 import { useLoginMutation } from "@/redux/features/auth/authApi";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Eye, EyeOff, Lock, Mail, AlertCircle } from "lucide-react";
 import { useAppDispatch } from "@/redux/hooks";
 import { setUser } from "@/redux/features/auth/authSlice";
@@ -47,7 +47,7 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50">
+    <div className="min-h-screen flex items-center justify-center">
       <div className="max-w-lg w-full space-y-8 px-4">
         <div className="bg-white border rounded-2xl shadow-xl p-8">
           {/* Header */}
@@ -55,7 +55,7 @@ const Login = () => {
             <div className="mx-auto h-12 w-12 bg-indigo-100 rounded-full flex items-center justify-center">
               <Lock className="h-6 w-6 text-indigo-600" />
             </div>
-            <h2 className="mt-4 text-2xl font-bold text-gray-900">Welcome back</h2>
+            <h2 className="mt-4 text-lg font-bold text-gray-900">Citizen Driven Issue Reporting & Tracking System</h2>
             <p className="mt-2 text-sm text-gray-600">
               Sign in to your account to continue
             </p>
@@ -123,6 +123,26 @@ const Login = () => {
               {errors.password && <p className="text-red-500 text-sm mt-1">{errors.password.message}</p>}
             </div>
 
+            {/* forgot password */}
+            <div className="flex items-center justify-between gap-2">
+              <div className="flex items-center">
+                <input
+                  id="remember-me"
+                  name="remember-me"
+                  type="checkbox"
+                  className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
+                />
+                <label htmlFor="remember-me" className="ml-2 block text-sm text-gray-900">
+                  Remember me
+                </label>
+              </div>
+              <div className="text-sm">
+                <Link to="/forgot-password" className="font-medium text-slate-600 hover:underline hover:text-red-500">
+                  Forgot your password?
+                </Link>
+              </div>
+            </div>
+
             {/* Error Message */}
             {errorMessage && (
               <div className="bg-red-50 border border-red-200 rounded-lg p-4 flex items-start space-x-3">
@@ -146,6 +166,14 @@ const Login = () => {
                 "Sign in"
               )}
             </button>
+
+            {/* signup link */}
+            <div className="text-sm text-gray-500 mt-4">
+              Don't have an account?{" "}
+              <Link to="/register" className="font-medium text-indigo-600 hover:underline hover:text-indigo-500">
+                Sign up
+              </Link>
+            </div>
           </form>
         </div>
       </div>

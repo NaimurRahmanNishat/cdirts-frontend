@@ -18,7 +18,7 @@ const Location = ({ issue, handleChange }: LocationProps) => {
         value={issue.location}
         onChange={handleChange}
         required
-        placeholder="যেমন: মিরপুর ১০, ঢাকা"
+        placeholder="Gulshan, Dhaka"
         className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition-all"
       />
     </div>

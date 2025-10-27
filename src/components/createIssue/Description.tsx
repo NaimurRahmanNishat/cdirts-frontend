@@ -18,7 +18,7 @@ const Description = ({ issue, handleChange }: DescriptionProps) => {
         onChange={handleChange}
         required
         rows={5}
-        placeholder="সমস্যা সম্পর্কে বিস্তারিত লিখুন..."
+        placeholder="Issue Description..."
         className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition-all resize-none"
       />
     </div>

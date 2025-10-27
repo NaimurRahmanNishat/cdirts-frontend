@@ -5,11 +5,11 @@ interface CategoriesProps {
   handleChange: (e: React.ChangeEvent<HTMLSelectElement>) => void;
 }
 const categoryOptions = [
-  { value: "electricity", label: "Electricity Issue" },
-  { value: "watar", label: "Water Issue" },
-  { value: "gas", label: "Gas Issue" },
-  { value: "bracking-road", label: "Road Issue" },
-  { value: "other", label: "Other Issue" }
+  { value: "electricity", label: "Electricity" },
+  { value: "watar", label: "Water" },
+  { value: "gas", label: "Gas" },
+  { value: "bracking-road", label: "Road" },
+  { value: "other", label: "Other" }
 ];
 
 const Categories = ({ issue, handleChange }: CategoriesProps) => {

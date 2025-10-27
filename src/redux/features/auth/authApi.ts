@@ -2,7 +2,7 @@
 import type { ActivateUserPayload, ActivateUserResponse, ForgotPasswordPayload, ForgotPasswordResponse, LoginResponse, LogoutResponse, RefreshTokenResponse, RegisterResponse, ResetPasswordPayload, ResetPasswordResponse, SocialAuthPayload, SocialAuthResponse, UpdateProfilePayload, UpdateProfileResponse, UserLoginPayload, UserRegisterPayload } from "@/types";
 import { getBaseUrl } from "@/utils/getBaseUrl";
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-import { setUser, logout } from "@/redux/features/auth/authSlice";
+import { setUser, logout, type AuthState } from "@/redux/features/auth/authSlice";
 
 const baseQuery = fetchBaseQuery({
   baseUrl: `${getBaseUrl()}/api/auth`,
@@ -12,33 +12,36 @@ const baseQuery = fetchBaseQuery({
 const baseQueryWithReauth: typeof baseQuery = async (args, api, extraOptions) => {
   let result = await baseQuery(args, api, extraOptions);
 
-  // 401 error check
-  if (result.error && result.error.status === 401) {
+  const skipReauthUrls = ["/login", "/register", "/refresh-token", "/forgot-password", "/reset-password"];
+  const url = typeof args === "string" ? args : args.url;
+
+  // If only user login থাকে এবং url skip না হয়, তখন refresh চেষ্টা
+  const state = api.getState() as { auth: AuthState };
+  const isAuthenticated = state.auth.isAuthenticated;
+
+  if (result.error && result.error.status === 401 && !skipReauthUrls.includes(url) && isAuthenticated) {
     console.log("Access token expired, attempting refresh...");
-    
+
     try {
       const refreshResult = await baseQuery(
-        { 
-          url: "/refresh-token", 
-          method: "POST",
-        },
+        { url: "/refresh-token", method: "POST" },
         api,
         extraOptions
       );
 
       if (refreshResult.data) {
         const refreshData = refreshResult.data as RefreshTokenResponse;
-        
+
         if (refreshData.success && refreshData.data) {
           console.log("Token refreshed successfully");
           api.dispatch(setUser(refreshData.data));
           result = await baseQuery(args, api, extraOptions);
         } else {
-          console.error("Refresh token response invalid");
+          console.error("Refresh token invalid, logging out");
           api.dispatch(logout());
         }
       } else {
-        console.error("Refresh token failed");
+        console.error("Refresh token failed, logging out");
         api.dispatch(logout());
       }
     } catch (error) {
@@ -46,9 +49,10 @@ const baseQueryWithReauth: typeof baseQuery = async (args, api, extraOptions) =>
       api.dispatch(logout());
     }
   }
-  
+
   return result;
 };
+
 
 export const authApi = createApi({
   reducerPath: "authApi",
@@ -139,19 +143,17 @@ export const authApi = createApi({
       query: () => ({
         url: "/logout",
         method: "POST",
-        credentials: "include",
+        credentials: "include", 
       }),
       invalidatesTags: ["Auth", "User"],
       async onQueryStarted(_arg, { dispatch, queryFulfilled }) {
         try {
           await queryFulfilled;
-          // Immediately clear local state
-          dispatch(logout());
+          dispatch(logout()); // Redux + LocalStorage clear
           console.log("Logout successful - local state cleared");
         } catch (error) {
           console.error("Logout error:", error);
-          // Even if API fails, clear local state
-          dispatch(logout());
+          dispatch(logout()); // Redux + LocalStorage clear
         }
       },
     }),
@@ -168,20 +170,17 @@ export const authApi = createApi({
 
     // Get user profile
     getCurrentUser: builder.query<LoginResponse, void>({
-      query: () => ({
-        url: "/refresh-token", 
-        method: "POST",
-      }),
+      query: () => ({ url: "/refresh-token", method: "POST" }),
       providesTags: ["User"],
-      // Error handle 
       async onQueryStarted(_arg, { dispatch, queryFulfilled }) {
         try {
-          await queryFulfilled;
+          const { data } = await queryFulfilled;
+          if (data.success && data.data) {
+            dispatch(setUser(data.data)); // Redux + LocalStorage update
+          }
         } catch (error: any) {
           if (error?.error?.status === 401) {
-            // Token invalid হলে automatic logout
             dispatch(logout());
-            console.log("Token invalid, auto logout");
           }
         }
       },
@@ -189,15 +188,5 @@ export const authApi = createApi({
   }),
 });
 
-export const {
-  useRegisterMutation,
-  useActivateUserMutation,
-  useLoginMutation,
-  useRefreshTokenMutation,
-  useSocialAuthMutation,
-  useForgotPasswordMutation,
-  useResetPasswordMutation,
-  useLogoutMutation,
-  useUpdateProfileMutation,
-  useGetCurrentUserQuery,
-} = authApi;
+export const { useRegisterMutation, useActivateUserMutation, useLoginMutation, useRefreshTokenMutation, useSocialAuthMutation, useForgotPasswordMutation, useResetPasswordMutation, useLogoutMutation, useUpdateProfileMutation, useGetCurrentUserQuery } = authApi;
+

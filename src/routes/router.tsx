@@ -21,6 +21,7 @@ import ElectricityPage from "@/pages/electricity/Electricity";
 import SinglePage from "@/pages/[id]/SinglePage";
 import CreateIssue from "@/pages/dashboard/user/create-issue/CreateIssue";
 import MyIssues from "@/pages/dashboard/user/my-issues/MyIssues";
+import ForgotPassword from "@/pages/forgot-password/ForgotPassword";
 
 const router = createBrowserRouter([
   {
@@ -37,6 +38,10 @@ const router = createBrowserRouter([
         element: <Login />,
       },
       {
+        path: "/forgot-password",
+        element: <ForgotPassword />,
+      },
+      {
         path: "/register-otp",
         element: <ActivateUser />,
       },
@@ -44,7 +49,7 @@ const router = createBrowserRouter([
         path: "/register",
         element: <Register />,
       },
-            {
+      {
         path: "/electricity",
         element: <ElectricityPage />,
       },
@@ -67,11 +72,11 @@ const router = createBrowserRouter([
       {
         path: "/issues/:issueId",
         element: <SinglePage />,
-      }
+      },
     ],
   },
   {
-    path: "/dashboard", 
+    path: "/dashboard",
     element: (
       <ProtectedRoute>
         <DashboardLayout />
@@ -93,7 +98,7 @@ const router = createBrowserRouter([
       },
       {
         path: "profile-settings", // children relative path
-        element: <ProfileSettings/>,
+        element: <ProfileSettings />,
       },
 
       // admin routes

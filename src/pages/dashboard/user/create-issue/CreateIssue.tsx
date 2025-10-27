@@ -24,31 +24,35 @@ interface IssueFormData {
 }
 
 const CreateIssue = () => {
-  const { user, isAuthenticated } = useSelector((state: RootState) => state.auth);
+  const { user, isAuthenticated } = useSelector(
+    (state: RootState) => state.auth
+  );
   const navigate = useNavigate();
   const [issue, setIssue] = useState<IssueFormData>({
-    title: '',
-    category: '',
-    description: '',
-    location: '',
-    division: '',
-    date: new Date().toISOString().split('T')[0],
+    title: "",
+    category: "",
+    description: "",
+    location: "",
+    division: "",
+    date: new Date().toISOString().split("T")[0],
     images: [],
   });
 
   const [createIssue, { isLoading, error }] = useCreateIssueMutation();
-  const [successMessage, setSuccessMessage] = useState<string>('');
+  const [successMessage, setSuccessMessage] = useState<string>("");
 
   // Redirect if not authenticated
   useEffect(() => {
     if (!isAuthenticated) {
-      alert("দয়া করে প্রথমে লগইন করুন।");
-      navigate('/login');
+      alert("Please log in first!");
+      navigate("/login");
     }
   }, [isAuthenticated, navigate]);
 
   const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+    >
   ) => {
     const { name, value } = e.target;
     setIssue((prev) => ({ ...prev, [name]: value }));
@@ -64,12 +68,19 @@ const CreateIssue = () => {
     // Check authentication
     if (!isAuthenticated || !user) {
       alert("দয়া করে প্রথমে লগইন করুন।");
-      navigate('/login');
+      navigate("/login");
       return;
     }
 
     // Validation
-    if (!issue.title || !issue.category || !issue.description || !issue.location || !issue.division || !issue.date) {
+    if (
+      !issue.title ||
+      !issue.category ||
+      !issue.description ||
+      !issue.location ||
+      !issue.division ||
+      !issue.date
+    ) {
       alert("দয়া করে সবগুলো ফিল্ড পূরণ করুন।");
       return;
     }
@@ -92,13 +103,13 @@ const CreateIssue = () => {
 
       console.log("Creating issue with data:", issueData);
       console.log("Authenticated user:", user); // Debug user info
-      
+
       const result = await createIssue(issueData).unwrap();
-      
+
       console.log("Issue created successfully:", result);
-      
+
       setSuccessMessage("ইসু সফলভাবে তৈরি হয়েছে!");
-      
+
       // Form reset
       setIssue({
         title: "",
@@ -106,26 +117,25 @@ const CreateIssue = () => {
         description: "",
         location: "",
         division: "",
-        date: new Date().toISOString().split('T')[0],
+        date: new Date().toISOString().split("T")[0],
         images: [],
       });
 
       setTimeout(() => {
-        setSuccessMessage('');
+        setSuccessMessage("");
       }, 3000);
-
     } catch (err: any) {
-      console.error("ইসু তৈরি করতে সমস্যা হয়েছে:", err);
-      
-      let errorMessage = "ইসু তৈরি করতে সমস্যা হয়েছে। দয়া করে আবার চেষ্টা করুন।";
-      
+      console.error("Error creating issue:", err);
+
+      let errorMessage = "Issue creation failed. Try again.";
+
       if (err?.data?.message) {
         errorMessage = err.data.message;
       } else if (err?.status === 401) {
-        errorMessage = "লগইন সেশন শেষ হয়েছে। দয়া করে আবার লগইন করুন।";
-        navigate('/login');
+        errorMessage = "please login first";
+        navigate("/login");
       }
-      
+
       alert(errorMessage);
     }
   };
@@ -135,16 +145,18 @@ const CreateIssue = () => {
     return (
       <div className="container mx-auto mt-8 px-4 max-w-2xl">
         <div className="text-center">
-          <p className="text-lg text-gray-600">লোড হচ্ছে...</p>
+          <p className="text-lg text-gray-600">Loading...</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="container mx-auto mt-8 px-4 max-w-2xl">
-      <h1 className="text-3xl font-bold mb-6 text-center text-gray-800">নতুন ইসু রিপোর্ট করুন</h1>
-      
+    <div className="container mx-auto mt-8 px-4">
+      <h1 className="text-3xl font-bold mb-6 text-center text-gray-800">
+        New Issue Create
+      </h1>
+
       {successMessage && (
         <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-4">
           {successMessage}
@@ -153,60 +165,48 @@ const CreateIssue = () => {
 
       {error && (
         <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
-          {"data" in error 
-            ? (error as any).data.message 
-            : "ইসু তৈরি করতে সমস্যা হয়েছে। দয়া করে আবার চেষ্টা করুন।"}
+          {"data" in error
+            ? (error as any).data.message
+            : "Something went wrong. Please try again."}
         </div>
       )}
 
-      <form onSubmit={handleSubmit} className="space-y-6 bg-white p-6 rounded-lg shadow-md">
+      <form
+        onSubmit={handleSubmit}
+        className="space-y-6 bg-white p-6 rounded-lg shadow-md"
+      >
         <Title issue={issue} handleChange={handleChange} />
         <Categories issue={issue} handleChange={handleChange} />
         <Division issue={issue} handleChange={handleChange} />
         <Location issue={issue} handleChange={handleChange} />
         <Description issue={issue} handleChange={handleChange} />
         <IssueDate issue={issue} handleChange={handleChange} />
-        
-        <UploadImage setIssue={handleImagesChange} currentImages={issue.images} />
 
-        {issue.images.length > 0 && (
-          <div className="mt-4">
-            <h3 className="text-lg font-semibold mb-2">আপলোডকৃত ইমেজসমূহ:</h3>
-            <div className="flex flex-wrap gap-2">
-              {issue.images.map((image, index) => (
-                <div key={index} className="relative">
-                  <img 
-                    src={image.url} 
-                    alt={`Uploaded ${index + 1}`} 
-                    className="w-20 h-20 object-cover rounded border"
-                  />
-                  <span className="absolute top-0 right-0 bg-black bg-opacity-50 text-white text-xs px-1 rounded">
-                    {index + 1}
-                  </span>
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
+        <UploadImage
+          setIssue={handleImagesChange}
+          currentImages={issue.images}
+        />
 
-        <button
-          type="submit"
-          disabled={isLoading}
-          className={`w-full py-3 px-4 rounded-md font-semibold ${
-            isLoading 
-              ? 'bg-gray-400 cursor-not-allowed' 
-              : 'bg-indigo-600 hover:bg-indigo-700'
-          } text-white transition duration-200`}
-        >
-          {isLoading ? 'ইসু তৈরি হচ্ছে...' : 'ইসু সাবমিট করুন'}
-        </button>
+        <div className="flex items-center">
+          <button
+            type="submit"
+            disabled={isLoading}
+            className={`w-full py-3 px-4 rounded-md font-semibold ${
+              isLoading
+                ? "bg-gray-400 cursor-not-allowed"
+                : "bg-indigo-600 hover:bg-indigo-700"
+            } text-white transition duration-200`}
+          >
+            {isLoading ? "Issues Creating..." : "Submit Issue"}
+          </button>
+        </div>
       </form>
 
       {isLoading && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-white p-6 rounded-lg shadow-lg">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600 mx-auto"></div>
-            <p className="mt-4 text-center">ইসু তৈরি হচ্ছে...</p>
+            <p className="mt-4 text-center">Issues Creating...</p>
           </div>
         </div>
       )}

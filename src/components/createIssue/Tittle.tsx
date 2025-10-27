@@ -18,7 +18,7 @@ const Tittle = ({ issue, handleChange }: TittleProps) => {
         value={issue.title}
         onChange={handleChange}
         required
-        placeholder="যেমন: রাস্তায় বড় গর্ত"
+        placeholder="Issue Title..."
         className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition-all"
       />
     </div>

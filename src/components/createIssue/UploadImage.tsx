@@ -25,12 +25,12 @@ const UploadImage = ({ setIssue, currentImages }: UploadImageProps) => {
         
         // File validation
         if (file.size > 10 * 1024 * 1024) { // 10MB limit
-          setUploadError(`ফাইল "${file.name}" এর সাইজ খুব বড়। সর্বোচ্চ 10MB সাইজের ফাইল আপলোড করতে পারবেন।`);
+          setUploadError(`File "${file.name}" File size too large। Maximum size is 10MB।`);
           continue;
         }
 
         if (!file.type.startsWith('image/')) {
-          setUploadError(`ফাইল "${file.name}" একটি ভ্যালিড ইমেজ ফাইল নয়।`);
+          setUploadError(`File "${file.name}" Invalid file format।`);
           continue;
         }
 
@@ -49,7 +49,7 @@ const UploadImage = ({ setIssue, currentImages }: UploadImageProps) => {
 
           if (!response.ok) {
             const errorData = await response.json().catch(() => ({}));
-            throw new Error(errorData.message || `আপলোড ব্যর্থ: ${response.status}`);
+            throw new Error(errorData.message || `Upload failed: ${response.status}`);
           }
 
           const result = await response.json();
@@ -60,29 +60,22 @@ const UploadImage = ({ setIssue, currentImages }: UploadImageProps) => {
               url: result.url
             });
           } else {
-            throw new Error(result.message || "আপলোড ব্যর্থ");
+            throw new Error(result.message || "Upload failed!");
           }
           
         } catch (fetchError: any) {
           console.error(`Upload failed for ${file.name}:`, fetchError);
-          setUploadError(`"${file.name}" আপলোড করতে সমস্যা: ${fetchError.message}`);
+          setUploadError(`"${file.name}" Upload failed: ${fetchError.message}`);
         }
       }
 
       setIssue(uploadedImages);
       
-      // Success message
-      if (uploadedImages.length > currentImages.length) {
-        const newCount = uploadedImages.length - currentImages.length;
-        alert(`${newCount}টি ইমেজ সফলভাবে আপলোড হয়েছে!`);
-      }
-      
     } catch (error: any) {
       console.error('Image upload process failed:', error);
-      setUploadError(error.message || 'ইমেজ আপলোড করতে সমস্যা হয়েছে।');
+      setUploadError(error.message || 'Something went wrong।');
     } finally {
       setUploading(false);
-      // Clear file input
       e.target.value = '';
     }
   };
@@ -107,8 +100,8 @@ const UploadImage = ({ setIssue, currentImages }: UploadImageProps) => {
   return (
     <div className="space-y-4">
       <label className="block text-sm font-medium text-gray-700">
-        ইসুর ছবি আপলোড করুন *
-        <span className="text-xs text-gray-500 ml-2">(সর্বোচ্চ 10MB প্রতি ইমেজ, JPEG, PNG, WebP)</span>
+        Issue Images *
+        <span className="text-xs text-gray-500 ml-2">(Maximum 10MB per image, JPEG, PNG, WebP)</span>
       </label>
       
       <input
@@ -123,13 +116,13 @@ const UploadImage = ({ setIssue, currentImages }: UploadImageProps) => {
       {uploading && (
         <div className="flex items-center space-x-2 text-sm text-blue-600">
           <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-blue-600"></div>
-          <span>ইমেজ আপলোড হচ্ছে...</span>
+          <span>Uploading...</span>
         </div>
       )}
       
       {uploadError && (
         <div className="text-sm text-red-600 bg-red-50 p-3 rounded border border-red-200">
-          ⚠️ {uploadError}
+          {uploadError}
         </div>
       )}
       
@@ -137,7 +130,7 @@ const UploadImage = ({ setIssue, currentImages }: UploadImageProps) => {
       {currentImages.length > 0 && (
         <div className="mt-4">
           <h3 className="text-lg font-semibold mb-2">
-            আপলোডকৃত ইমেজসমূহ ({currentImages.length})
+            Uploaded Images ({currentImages.length})
           </h3>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             {currentImages.map((image, index) => (
@@ -152,10 +145,10 @@ const UploadImage = ({ setIssue, currentImages }: UploadImageProps) => {
                   onClick={() => removeImage(index)}
                   className="absolute top-1 right-1 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs opacity-0 group-hover:opacity-100 transition-opacity duration-200"
                 >
-                  ×
+                  X
                 </button>
                 <div className="absolute bottom-0 left-0 right-0 bg-black bg-opacity-70 text-white text-xs p-1 text-center">
-                  ইমেজ {index + 1}
+                  Images {index + 1}
                 </div>
               </div>
             ))}
