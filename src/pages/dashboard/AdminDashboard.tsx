@@ -9,13 +9,9 @@ interface NavItems {
 
 const navItems: NavItems[] = [
   { path: "/dashboard/admin", label: "Dashboard" },
-  { path: "/dashboard/vendor-management", label: "Vendor Management" },
+  { path: "/dashboard/vendor-management", label: "Report Issues" },
   { path: "/dashboard/user-management", label: "User Management" },
-  { path: "/dashboard/service-management", label: "Service Management" },
-  { path: "/dashboard/booking-management", label: "Booking Management" },
-  { path: "/dashboard/commission", label: "Commission & Payment" },
-  { path: "/dashboard/reports", label: "Reports & Analytics" },
-  { path: "/dashboard/settings", label: "Settings" },
+  { path: "/dashboard/profile-settings", label: "Profile Settings" },
 ];
 
 const AdminDashboard = () => {

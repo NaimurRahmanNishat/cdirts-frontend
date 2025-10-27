@@ -29,8 +29,8 @@ const Login = () => {
       const res = await login(data).unwrap();
       
       if (res.success && res.data) {
-        dispatch(setUser(res.data));
-        alert(res.message || "Login Successfully!");
+        const { ...userWithoutSensitiveData } = res.data as any;
+        dispatch(setUser(userWithoutSensitiveData));
         toast.success(res.message || "Login Successfully!");
         navigate("/");
       } else {

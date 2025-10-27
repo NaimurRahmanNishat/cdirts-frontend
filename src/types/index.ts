@@ -116,6 +116,7 @@ export interface UpdateProfilePayload {
 
 
 // issue types 
+
 export interface IssueImage {
   public_id: string;
   url: string;
@@ -146,10 +147,18 @@ export interface Issue {
   division: string;
   status: string;
   author: IAuthor | string;
+  approvedBy?: IAuthor | string; 
+  approvedAt?: string; 
   reviews?: Review[];
   date: Date;
   createdAt?: string;
   updatedAt?: string;
+}
+
+export interface ApproveIssueResponse {
+  success: boolean;
+  message: string;
+  issue: Issue;
 }
 
 export interface CreateIssuePayload {
@@ -159,7 +168,6 @@ export interface CreateIssuePayload {
   images: IssueImage[];
   location: string;
   division: string;
-  author?: string; 
   date: Date;
 }
 

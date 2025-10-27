@@ -11,6 +11,12 @@ interface Props {
 const ProfileCard = ({ setMenuOpen, handleLogout }: Props) => {
   const { user } = useSelector((state: RootState) => state.auth);
   const navigate = useNavigate();
+
+  const handleNavigate = () => {
+    if (user?.role === "admin") navigate("/dashboard/profile-settings");
+    else if (user?.role === "user") navigate("/dashboard/profile-settings");
+    setMenuOpen(false);
+  };
   return (
     <div>
       <div
@@ -42,8 +48,7 @@ const ProfileCard = ({ setMenuOpen, handleLogout }: Props) => {
           <li>
             <button
               onClick={() => {
-                setMenuOpen(false);
-                navigate("/dashboard/settings");
+                handleNavigate();
               }}
               className="block cursor-pointer w-full text-left px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-700 transition"
             >

@@ -7,7 +7,8 @@ import type {
   GetAllIssuesArgs,
   IssueByIdResponse,
   PaginatedIssuesResponse,
-  CreateIssueResponse
+  CreateIssueResponse,
+  ApproveIssueResponse
 } from "@/types";
 
 export const issueApi = createApi({
@@ -20,10 +21,21 @@ export const issueApi = createApi({
   endpoints: (builder) => ({
     // Create issue
     createIssue: builder.mutation<CreateIssueResponse, CreateIssuePayload>({
-      query: (body) => ({
+      query: (newIssue) => ({
         url: "/create-issue",
         method: "POST",
-        body,
+        body: newIssue,
+        credentials: "include",
+      }),
+      invalidatesTags: ["Issue"],
+    }),
+
+    // Approve issue
+    approveIssue: builder.mutation<ApproveIssueResponse, string>({
+      query: (issueId) => ({
+        url: `/approve/${issueId}`,
+        method: "PUT",
+        credentials: "include",
       }),
       invalidatesTags: ["Issue"],
     }),
@@ -80,6 +92,7 @@ export const issueApi = createApi({
 
 export const {
   useCreateIssueMutation,
+  useApproveIssueMutation,
   useGetAllIssuesQuery,
   useGetIssueByIdQuery,
   useEditIssueMutation,

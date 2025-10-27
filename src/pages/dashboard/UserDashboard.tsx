@@ -6,28 +6,16 @@ const navItems = [
     label: "Dashboard",
   },
   {
-    path: "/dashboard/browse-chairs",
-    label: "Browse Chairs",
+    path: "/dashboard/create-issue",
+    label: "Create Issue",
   },
   {
-    path: "/dashboard/my-bookings",
-    label: "My Bookings",
-  },
-  {
-    path: "/dashboard/payment-history",
-    label: "Payment History",
-  },
-  {
-    path: "/dashboard/reviews",
-    label: "Reviews",
+    path: "/dashboard/my-issues",
+    label: "My Issues",
   },
     {
     path: "/dashboard/profile-settings",
     label: "Profile Settings",
-  },
-  {
-    path: "/dashboard/support",
-    label: "Support / Help Center",
   },
 ];
 

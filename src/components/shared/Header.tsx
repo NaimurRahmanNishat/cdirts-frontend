@@ -21,7 +21,7 @@ const Header = () => {
       const res = await logoutUser().unwrap();
       if (res.success) {
         dispatch(logout());
-        alert(res.message || "Logged out successfully!");
+        toast.success(res.message || "Logged out successfully!");
         navigate("/");
       }
     } catch (error) {
@@ -44,7 +44,7 @@ const Header = () => {
             to="/"
             className="bg-gradient-to-r from-blue-600 via-purple-500 to-pink-500 bg-clip-text text-transparent"
           >
-            Zen<span className="text-yellow-500 drop-shadow-sm">mo</span>
+            Cdir<span className="text-yellow-500 drop-shadow-sm">ts.</span>
           </Link>
         </h1>
 
@@ -69,54 +69,55 @@ const Header = () => {
             Others
           </Link>
         </nav>
-
-        {/* Conditional Render */}
         <div className="flex items-center gap-4">
-          {user ? (
-            <div className="relative group flex items-center gap-2 cursor-pointer">
-              {/* User Icon → click to profile */}
-              {user?.avatar ? (
-                <img
-                  src={user?.avatar.url}
-                  alt="avatar"
-                  onClick={handleProfileClick}
-                  className="w-8 h-8 rounded-full border border-gray-300 hover:ring-2 hover:ring-blue-400 transition"
-                />
-              ) : (
-                <img
-                  src={userIcon}
-                  alt="userIcons"
-                  onClick={handleProfileClick}
-                  className="w-8 h-8 rounded-full hover:ring-2 hover:ring-blue-400 transition"
-                />
-              )}
+          {/* Conditional Render */}
+          <div className="flex items-center  gap-4">
+            {user ? (
+              <div className="relative group flex items-center justify-end md:justify-between gap-2 cursor-pointer">
+                {/* User Icon → click to profile */}
+                {user?.avatar ? (
+                  <img
+                    src={user?.avatar.url}
+                    alt="avatar"
+                    onClick={handleProfileClick}
+                    className="w-8 h-8 rounded-full border border-gray-300 hover:ring-2 hover:ring-blue-400 transition"
+                  />
+                ) : (
+                  <img
+                    src={userIcon}
+                    alt="userIcons"
+                    onClick={handleProfileClick}
+                    className="w-8 h-8 rounded-full hover:ring-2 hover:ring-blue-400 transition"
+                  />
+                )}
 
-              <span
-                onClick={handleLogout}
-                className="px-4 hover:text-blue-600 text-gray-700"
-              >
-                Logout
-              </span>
-            </div>
-          ) : (
-            <>
-              <Link to="/login" className="hover:text-blue-600 transition">
-                Login
-              </Link>
-              <Link to="/register" className="hover:text-blue-600 transition">
-                Register
-              </Link>
-            </>
-          )}
+                <span
+                  onClick={handleLogout}
+                  className="px-4 hover:text-blue-600 text-gray-700"
+                >
+                  Logout
+                </span>
+              </div>
+            ) : (
+              <>
+                <Link to="/login" className="hover:text-blue-600 transition">
+                  Login
+                </Link>
+                <Link to="/register" className="hover:text-blue-600 transition">
+                  Register
+                </Link>
+              </>
+            )}
+          </div>
+
+          {/* Mobile Menu Button */}
+          <button
+            onClick={() => setMenuOpen(!menuOpen)}
+            className="md:hidden text-gray-700"
+          >
+            {menuOpen ? <X size={28} /> : <Menu size={28} />}
+          </button>
         </div>
-
-        {/* Mobile Menu Button */}
-        <button
-          onClick={() => setMenuOpen(!menuOpen)}
-          className="md:hidden text-gray-700"
-        >
-          {menuOpen ? <X size={28} /> : <Menu size={28} />}
-        </button>
       </div>
 
       {/* Mobile Dropdown Menu */}
@@ -189,20 +190,7 @@ const Header = () => {
               </>
             ) : (
               <>
-                <Link
-                  to="/login"
-                  onClick={() => setMenuOpen(false)}
-                  className="hover:text-blue-600 transition"
-                >
-                  Login
-                </Link>
-                <Link
-                  to="/register"
-                  onClick={() => setMenuOpen(false)}
-                  className="hover:text-blue-600 transition"
-                >
-                  Register
-                </Link>
+              <span></span>
               </>
             )}
           </nav>
