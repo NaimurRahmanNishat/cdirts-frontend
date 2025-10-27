@@ -8,6 +8,8 @@ import {
   useGetAdminStatsQuery,
   type AdminStatsResponse,
 } from "@/redux/features/stats/statsApi";
+import { AuroraText } from "@/components/ui/aurora-text";
+import { NumberTicker } from "@/components/ui/number-ticker";
 
 const AdminDashboardMain = () => {
   const { user } = useSelector((state: RootState) => state.auth);
@@ -25,62 +27,88 @@ const AdminDashboardMain = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col gap-4 md:gap-8 pt-2 md:pt-8">
-      {/* Top section */}
-      <div className="flex flex-col md:flex-row gap-4 w-full">
-        {/* Left */}
-        <div className="w-full lg:w-[60%] md:h-[220px] h-fit flex bg-white shadow border rounded-lg">
-          <div className="grid grid-cols-1 md:grid-cols-2 w-full gap-2">
-            <div className="flex flex-col gap-4 pt-6 px-6">
-              <h1>
+    <div className="min-h-screen flex flex-col gap-6 md:gap-8">
+      {/* Top Section */}
+      <div className="flex flex-col lg:flex-row gap-6 w-full">
+        {/* Left Card */}
+        <div className="w-full lg:w-[60%] bg-white shadow border rounded-lg flex flex-col justify-between">
+          <div className="grid grid-cols-1 md:grid-cols-2 w-full">
+            {/* Text Section */}
+            <div className="flex flex-col justify-center gap-3 p-6">
+              <h1 className="text-lg md:text-xl">
                 Congratulations{" "}
-                <span className="text-pink-500 font-medium">{user?.name}</span> 🎉
+                <span className="text-pink-500 font-medium">{user?.name}</span>{" "}
+                🎉
               </h1>
-              <p className="text-gray-700 text-sm">
+              <p className="text-gray-700 text-sm leading-relaxed">
                 You have done 72% more sales today. <br />
                 Check your new badge in your profile.
               </p>
-              <div className="md:pt-6">
-                <button className="bg-pink-500 text-white px-4 py-2 rounded-md cursor-pointer hover:bg-blue-600">
+              <div className="pt-4">
+                <button className="bg-pink-500 text-white px-4 py-2 rounded-md cursor-pointer hover:bg-blue-600 transition">
                   View profile
                 </button>
               </div>
             </div>
-            <div className="flex md:items-end items-center justify-center md:justify-end pt-8 md:pt-0">
-              <img src={adminMan} alt="" className="w-[260px] h-[180px] pr-12" />
+
+            {/* Image Section */}
+            <div className="flex items-center justify-center md:justify-end p-4">
+              <img
+                src={adminMan}
+                alt="admin"
+                className="w-[220px] md:w-[260px] h-auto object-contain"
+              />
             </div>
           </div>
         </div>
-        {/* Right */}
-        <div className="w-full lg:w-[40%] h-[120px] grid grid-cols-2 gap-4">
-          <div className="w-full bg-white shadow border text-center rounded-lg p-4">
-            <h2 className="text-xl font-semibold mb-2">Total Issues</h2>
-            <p className="text-2xl font-bold">{stats.totalIssues}</p>
+
+        {/* Right Stats Grid */}
+        <div className="w-full lg:w-[40%] grid grid-cols-2 sm:grid-cols-2 md:grid-cols-2 gap-4">
+          <div className="bg-white shadow border text-center rounded-lg p-4">
+            <h2 className="text-base md:text-lg font-semibold mb-1">
+              <AuroraText>Total Issues</AuroraText>
+            </h2>
+            <p className="text-xl md:text-2xl text-slate-600 font-bold">
+              <NumberTicker value={stats.totalIssues} />
+            </p>
           </div>
-          <div className="w-full bg-white shadow border text-center rounded-lg p-4">
-            <h2 className="text-xl font-semibold mb-2">Pending Issues</h2>
-            <p className="text-2xl font-bold">{stats.pendingIssues}</p>
+          <div className="bg-white shadow border text-center rounded-lg p-4">
+            <h2 className="text-base md:text-lg font-semibold mb-1">
+              <AuroraText>Pending Issues</AuroraText>
+            </h2>
+            <p className="text-xl md:text-2xl font-bold">
+              <NumberTicker value={stats.pendingIssues} />
+            </p>
           </div>
-            <div className="w-full bg-white shadow border text-center rounded-lg p-4">
-              <h2 className="text-xl font-semibold mb-2">In Progress</h2>
-              <p className="text-2xl font-bold">{stats.inProgressIssues}</p>
-            </div>
-            <div className="w-full bg-white shadow border text-center rounded-lg p-4">
-              <h2 className="text-xl font-semibold mb-2">Solved Issues</h2>
-              <p className="text-2xl font-bold">{stats.solvedIssues}</p>
-            </div>
+          <div className="bg-white shadow border text-center rounded-lg p-4">
+            <h2 className="text-base md:text-lg font-semibold mb-1">
+              <AuroraText>In Progress</AuroraText>
+            </h2>
+            <p className="text-xl md:text-2xl font-bold">
+              <NumberTicker value={stats.inProgressIssues} />
+            </p>
+          </div>
+          <div className="bg-white shadow border text-center rounded-lg p-4">
+            <h2 className="text-base md:text-lg font-semibold mb-1">
+              <AuroraText>Solved Issues</AuroraText>
+            </h2>
+            <p className="text-xl md:text-2xl font-bold">
+              <NumberTicker value={stats.solvedIssues} />
+            </p>
+          </div>
         </div>
       </div>
 
-      {/* Middle section */}
-      <div className="flex flex-col md:flex-row gap-4 w-full">
-        <div className="w-full lg:w-[60%] h-[440px] flex bg-white shadow border rounded-lg">
+      {/* Bottom Section */}
+      <div className="flex flex-col lg:flex-row gap-6 w-full">
+        {/* Left Chart */}
+        <div className="w-full lg:w-[60%] bg-white shadow border rounded-lg p-4 h-[400px] sm:h-[440px]">
           <Chartar stats={stats} />
         </div>
-        <div className="w-full lg:w-[40%] h-[440px] flex flex-col gap-4">
-          <div className="w-full h-[440px] bg-white shadow border rounded-lg">
-            <LineChart stats={stats} />
-          </div>
+
+        {/* Right Chart */}
+        <div className="w-full lg:w-[40%] bg-white shadow border rounded-lg p-4 h-[400px] sm:h-[440px]">
+          <LineChart stats={stats} />
         </div>
       </div>
     </div>
