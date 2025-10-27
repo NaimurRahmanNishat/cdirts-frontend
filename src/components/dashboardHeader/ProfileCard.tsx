@@ -5,10 +5,10 @@ import type { RootState } from "@/redux/store";
 
 interface Props {
   setMenuOpen(value: boolean): void;
-  handleLogout: () => void;
+  // handleLogout: () => void;
 }
 
-const ProfileCard = ({ setMenuOpen, handleLogout }: Props) => {
+const ProfileCard = ({ setMenuOpen }: Props) => {
   const { user } = useSelector((state: RootState) => state.auth);
   const navigate = useNavigate();
 
@@ -56,12 +56,12 @@ const ProfileCard = ({ setMenuOpen, handleLogout }: Props) => {
             </button>
           </li>
           <li>
-            <button
+            {/* <button
               onClick={handleLogout}
               className="block cursor-pointer w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-100 dark:hover:bg-gray-700 transition"
             >
               Logout
-            </button>
+            </button> */}
           </li>
         </ul>
       </div>

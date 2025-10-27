@@ -26,7 +26,7 @@ const UserDashboard = () => {
       <div>
         <div className="text-2xl font-extrabold text-[#0f172a]">
           <Link to="/" className="text-[#239c47]">  
-            ZENMO<span className="text-[#3b82f6] text-4xl">.</span>
+            Cdirts<span className="text-[#3b82f6] text-4xl">.</span>
           </Link>
           <p className="text-xs italic text-pink-500">User dashboard</p>
         </div>

@@ -1,9 +1,10 @@
+import HeroImageSlider from "@/components/home/HeroImageSlider";
 
 
 const Home = () => {
   return (
     <div className="min-h-screen">
-      Home page
+      <HeroImageSlider />
     </div>
   )
 }

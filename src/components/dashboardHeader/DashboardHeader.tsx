@@ -4,34 +4,11 @@ import type { RootState } from "@/redux/store";
 import { IoNotificationsOutline } from "react-icons/io5";
 import { TbWorld } from "react-icons/tb";
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { toast } from "react-toastify";
 import ProfileCard from "./ProfileCard";
-import { useLogoutMutation } from "@/redux/features/auth/authApi";
-import { useDispatch } from "react-redux";
-import { logout } from "@/redux/features/auth/authSlice";
 
 const DashboardHeader = () => {
   const { user } = useSelector((state: RootState) => state.auth);
   const [menuOpen, setMenuOpen] = useState(false);
-  const navigate = useNavigate();
-  const dispatch = useDispatch();
-  const [logoutUser] = useLogoutMutation(); 
-
-  // Logout handler
-  const handleLogout = async () => {
-    try {
-      const res = await logoutUser().unwrap();
-      if (res.success) {
-        dispatch(logout()); 
-        alert(res.message || "Logged out successfully!");
-        navigate("/"); 
-      }
-    } catch (error) {
-      console.error("Logout failed:", error);
-      toast.error("Logout failed. Try again.");
-    }
-  };
 
   return (
     <header className="relative mx-4 md:mx-12 bg-gray-200 dark:bg-gray-800 text-gray-800 rounded-lg p-4 flex justify-between items-center transition-all duration-300">
@@ -63,7 +40,7 @@ const DashboardHeader = () => {
 
             {/* Dropdown Menu */}
             {menuOpen && (
-              <ProfileCard setMenuOpen={setMenuOpen} handleLogout={handleLogout}/>
+              <ProfileCard setMenuOpen={setMenuOpen}/>
             )}
           </div>
         )}

@@ -23,7 +23,7 @@ const AdminDashboard = () => {
       <div className="flex items-center justify-between mb-6">
         <div className="text-2xl font-extrabold text-[#0f172a] px-4">
           <Link to="/" className="text-[#239c47] text-start">
-            ZENMO<span className="text-[#3b82f6] text-4xl">.</span>
+            Cdirts<span className="text-[#3b82f6] text-4xl">.</span>
           </Link>
           <p className="text-xs italic text-[#3785f9] hidden md:block">
             Admin dashboard
