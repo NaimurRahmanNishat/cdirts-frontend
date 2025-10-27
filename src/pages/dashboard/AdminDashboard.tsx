@@ -1,13 +1,9 @@
 import { Link, NavLink } from "react-router-dom";
 import { useState } from "react";
 import { Menu, X } from "lucide-react";
+import logo from "../../assets/logo.png";
 
-interface NavItems {
-  path: string;
-  label: string;
-}
-
-const navItems: NavItems[] = [
+const navItems = [
   { path: "/dashboard/admin", label: "Dashboard" },
   { path: "/dashboard/vendor-management", label: "Report Issues" },
   { path: "/dashboard/user-management", label: "User Management" },
@@ -18,54 +14,92 @@ const AdminDashboard = () => {
   const [menuOpen, setMenuOpen] = useState(false);
 
   return (
-    <div className="bg-white text-black font-medium flex flex-col md:h-screen p-4">
-      {/* Header (Logo + Toggle) */}
-      <div className="flex items-center justify-between mb-6">
-        <div className="text-2xl font-extrabold text-[#0f172a] px-4">
-          <Link to="/" className="text-[#239c47] text-start">
-            Cdirts<span className="text-[#3b82f6] text-4xl">.</span>
+    <div  className="bg-white md:h-screen flex flex-col shadow-md">
+      {/* Header Section */}
+      <div className="flex justify-between md:justify-center items-center p-5 border-b">
+        <div className="flex flex-col items-center justify-center">
+          <Link to="/" className="flex items-center space-x-2">
+            <img src={logo} alt="logo" className="w-12 h-12" />
           </Link>
-          <p className="text-xs italic text-[#3785f9] hidden md:block">
-            Admin dashboard
-          </p>
+          <p className="text-xs italic text-pink-500 mt-1">Admin dashboard</p>
         </div>
 
-        {/* Mobile menu toggle */}
+        {/* Mobile Toggle Button */}
         <button
-          className="md:hidden text-gray-600 hover:text-gray-800"
           onClick={() => setMenuOpen(!menuOpen)}
+          className="md:hidden text-gray-700 focus:outline-none"
         >
-          {menuOpen ? <X size={24} /> : <Menu size={24} />}
+          {menuOpen ? <X size={28} /> : <Menu size={28} />}
         </button>
       </div>
 
-      {/* Nav Menu */}
+      {/* Desktop Sidebar */}
+      <ul className="hidden md:flex flex-col space-y-4 p-6">
+        {navItems.map((item, index) => (
+          <li key={index}>
+            <NavLink
+              to={item.path}
+              end
+              className={({ isActive }) =>
+                `block px-3 py-2 rounded-md transition ${
+                  isActive
+                    ? "text-[#f95937] font-semibold bg-gray-100"
+                    : "text-[#0f172a] hover:text-[#f95937]"
+                }`
+              }
+            >
+              {item.label}
+            </NavLink>
+          </li>
+        ))}
+      </ul>
+
+      {/* Mobile Sidebar Overlay */}
+      {menuOpen && (
+        <div
+          className="fixed inset-0 z-40 bg-black bg-opacity-40 md:hidden"
+          onClick={() => setMenuOpen(false)}
+        ></div>
+      )}
+
+      {/* Mobile Sidebar Menu */}
       <div
-        className={`flex-1 flex-col justify-between ${
-          menuOpen ? "flex" : "hidden md:flex"
+        className={`fixed top-0 left-0 z-50 h-full w-64 bg-white shadow-lg transform transition-transform duration-300 md:hidden ${
+          menuOpen ? "translate-x-0" : "-translate-x-full"
         }`}
       >
-        <div>
-          <ul className="space-y-4 pt-2 md:pt-5">
-            {navItems.map((item, index) => (
-              <li key={index}>
-                <NavLink
-                  to={item.path}
-                  className={({ isActive }) =>
-                    `block px-3 py-2 rounded-md transition-colors duration-200 ${
-                      isActive
-                        ? "text-[#f95937] font-semibold"
-                        : "hover:text-[#f95937]"
-                    }`
-                  }
-                  onClick={() => setMenuOpen(false)} 
-                >
-                  {item.label}
-                </NavLink>
-              </li>
-            ))}
-          </ul>
+        <div className="flex justify-between items-center p-5 border-b">
+          <Link to="/" onClick={() => setMenuOpen(false)}>
+            <img src={logo} alt="logo" className="w-12 h-12" />
+          </Link>
+          <button
+            onClick={() => setMenuOpen(false)}
+            className="text-gray-700 focus:outline-none"
+          >
+            <X size={28} />
+          </button>
         </div>
+
+        <ul className="flex flex-col space-y-4 p-6">
+          {navItems.map((item, index) => (
+            <li key={index}>
+              <NavLink
+                to={item.path}
+                end
+                onClick={() => setMenuOpen(false)}
+                className={({ isActive }) =>
+                  `block px-3 py-2 rounded-md transition ${
+                    isActive
+                      ? "text-[#f95937] font-semibold bg-gray-100"
+                      : "text-[#0f172a] hover:text-[#f95937]"
+                  }`
+                }
+              >
+                {item.label}
+              </NavLink>
+            </li>
+          ))}
+        </ul>
       </div>
     </div>
   );
