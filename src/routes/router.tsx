@@ -14,7 +14,6 @@ import UserManagement from "@/pages/dashboard/admin/user-management/UserManageme
 import Settings from "@/pages/dashboard/admin/settings/Settings";
 import Gas from "@/pages/gas/Gas";
 import Road from "@/pages/road/Road";
-import Watar from "@/pages/watar/Watar";
 import Others from "@/pages/others/Others";
 import ActivateUser from "@/pages/register/ActivateUser";
 import ElectricityPage from "@/pages/electricity/Electricity";
@@ -22,6 +21,7 @@ import SinglePage from "@/pages/[id]/SinglePage";
 import CreateIssue from "@/pages/dashboard/user/create-issue/CreateIssue";
 import MyIssues from "@/pages/dashboard/user/my-issues/MyIssues";
 import ForgotPassword from "@/pages/forgot-password/ForgotPassword";
+import Water from "@/pages/watar/Water";
 
 const router = createBrowserRouter([
   {
@@ -62,8 +62,8 @@ const router = createBrowserRouter([
         element: <Road />,
       },
       {
-        path: "/watar",
-        element: <Watar />,
+        path: "/water",
+        element: <Water />,
       },
       {
         path: "/others",

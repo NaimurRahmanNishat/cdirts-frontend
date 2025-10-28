@@ -49,7 +49,7 @@ const ActivateUser =() => {
     try {
       const res = await activateUser({ token, activationCode: data.otp }).unwrap();
       if (res.success) {
-        alert("User registered successfully!");
+        toast.success("User registered successfully!");
         localStorage.removeItem("activationToken");
         navigate("/login"); 
       } else {

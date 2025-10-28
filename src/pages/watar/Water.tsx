@@ -4,9 +4,9 @@ import { Link } from "react-router-dom";
 import type { Issue } from "@/types";
 import { useGetAllIssuesQuery } from "@/redux/features/issue/issuApi";
 
-const Watar = () => {
+const Water = () => {
   const { data, isLoading, error } = useGetAllIssuesQuery({
-    category: IssueCategory.WATAR,
+    category: IssueCategory.WATER,
     page: 1,
     limit: 10,
   });
@@ -60,4 +60,4 @@ const Watar = () => {
   );
 };
 
-export default Watar;
+export default Water;

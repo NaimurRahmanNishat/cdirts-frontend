@@ -12,8 +12,8 @@ export const BangladeshDivision = {
 
 export const IssueCategory = {
   ELECTRICITY: "electricity",
-  WATAR: "watar",
+  WATER: "water",
   GAS: "gas",
-  BRACKING_ROAD: "bracking-road",
+  BROKEN_ROAD: "broken-road",
   OTHER: "other",
 } as const;
