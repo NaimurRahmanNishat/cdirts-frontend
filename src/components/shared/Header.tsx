@@ -118,7 +118,9 @@ const Header = () => {
         }`}
       >
         <div className="flex justify-between items-center px-4 py-4 border-b border-gray-200">
-          <h2 className="text-lg font-semibold text-gray-800">Menu</h2>
+          <Link to="/" onClick={() => setMenuOpen(false)} className="flex items-center gap-2">
+          <img src={logo} alt="Logo" className="w-8 h-8 object-contain" />
+        </Link>
           <button onClick={() => setMenuOpen(false)}>
             <X size={24} className="text-gray-600" />
           </button>
@@ -155,10 +157,10 @@ const Header = () => {
                 </button>
               </>
             ) : (
-              <>
+              <div className="flex flex-col gap-2">
                 <Link to="/login" onClick={() => setMenuOpen(false)} className="hover:text-[#239c47] transition">Login</Link>
                 <Link to="/register" onClick={() => setMenuOpen(false)} className="hover:text-[#239c47] transition">Register</Link>
-              </>
+              </div>
             )}
           </div>
         </nav>

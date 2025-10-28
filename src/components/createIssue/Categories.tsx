@@ -6,7 +6,7 @@ interface CategoriesProps {
 }
 const categoryOptions = [
   { value: "electricity", label: "Electricity" },
-  { value: "watar", label: "Water" },
+  { value: "watar", label: "Watar" },
   { value: "gas", label: "Gas" },
   { value: "bracking-road", label: "Road" },
   { value: "other", label: "Other" }
