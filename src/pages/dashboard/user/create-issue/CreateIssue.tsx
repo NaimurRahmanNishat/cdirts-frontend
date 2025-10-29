@@ -49,11 +49,7 @@ const CreateIssue = () => {
     }
   }, [isAuthenticated, navigate]);
 
-  const handleChange = (
-    e: React.ChangeEvent<
-      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
-    >
-  ) => {
+  const handleChange = (e: React.ChangeEvent< HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     setIssue((prev) => ({ ...prev, [name]: value }));
   };
@@ -67,7 +63,7 @@ const CreateIssue = () => {
 
     // Check authentication
     if (!isAuthenticated || !user) {
-      alert("দয়া করে প্রথমে লগইন করুন।");
+      alert("Please log in first.");
       navigate("/login");
       return;
     }
@@ -81,12 +77,12 @@ const CreateIssue = () => {
       !issue.division ||
       !issue.date
     ) {
-      alert("দয়া করে সবগুলো ফিল্ড পূরণ করুন।");
+      alert("Please fill in all fields.");
       return;
     }
 
     if (issue.images.length === 0) {
-      alert("দয়া করে অন্তত একটি ইমেজ আপলোড করুন।");
+      alert("Please upload at least one image.");
       return;
     }
 
@@ -108,7 +104,7 @@ const CreateIssue = () => {
 
       console.log("Issue created successfully:", result);
 
-      setSuccessMessage("ইসু সফলভাবে তৈরি হয়েছে!");
+      setSuccessMessage("Issue created successfully!");
 
       // Form reset
       setIssue({
@@ -152,7 +148,7 @@ const CreateIssue = () => {
   }
 
   return (
-    <div className="container mx-auto mt-8 px-4">
+    <div className="container mx-auto mt-8">
       <h1 className="text-3xl font-bold mb-6 text-center text-gray-800">
         New Issue Create
       </h1>
