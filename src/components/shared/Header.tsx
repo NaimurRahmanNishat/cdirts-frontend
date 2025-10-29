@@ -11,7 +11,7 @@ const Header = () => {
 
   return (
     <header className="bg-white shadow-md sticky top-0 left-0 w-full z-50">
-      <div className="max-w-7xl mx-auto flex justify-between items-center px-4 md:px-6 py-3">
+      <div className="max-w-7xl mx-auto flex justify-between items-center px-4 lg:px-0 py-3">
         {/* Logo */}
         <Link to="/" className="flex items-center gap-2">
           <img src={logo} alt="Logo" className="w-14 h-14 object-contain" />
@@ -29,6 +29,8 @@ const Header = () => {
           <button
             onClick={() => setMenuOpen(!menuOpen)}
             className="md:hidden text-gray-700 hover:text-[#239c47] transition"
+            aria-label="Toggle mobile menu"
+            aria-expanded={menuOpen}
           >
             {menuOpen ? <X size={28} /> : <Menu size={28} />}
           </button>

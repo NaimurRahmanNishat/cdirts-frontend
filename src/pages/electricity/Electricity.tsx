@@ -1,8 +1,8 @@
+import IssueCard from "@/components/shared/IssueCard";
 import Loading from "@/components/shared/Loading";
 import { IssueCategory } from "@/constants/divisions";
 import { useGetAllIssuesQuery } from "@/redux/features/issue/issuApi";
 import type { Issue } from "@/types";
-import { Link } from "react-router-dom";
 
 const ElectricityPage = () => {
   const { data, isLoading, error } = useGetAllIssuesQuery({
@@ -15,32 +15,15 @@ const ElectricityPage = () => {
   if (error) return <p>Failed to load issues.</p>;
 
   return (
-    <div className="container mx-auto py-8 px-4">
-      <h1 className="text-2xl font-bold mb-6 text-blue-700">Electricity Issues</h1>
+    <div className="container mx-auto py-8">
+      <h1 className="text-2xl font-bold text-center mb-6 text-blue-700">Electricity Issues</h1>
 
       {data?.issues?.length ? (
-        <Link to={`/issues/${data.issues[0]._id}`} className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
           {data.issues.map((issue: Issue) => (
-            <div
-              key={issue._id}
-              className="bg-white shadow-md rounded-xl border p-4 hover:shadow-lg transition"
-            >
-              <h2 className="text-lg font-semibold text-gray-800 mb-2">
-                {issue.title}
-              </h2>
-              <p className="text-gray-600 text-sm line-clamp-3">
-                {issue.description}
-              </p>
-              <p className="text-sm text-gray-500 mt-2">
-                <strong>Division:</strong> {issue.division}
-              </p>
-              <p className="text-sm text-gray-500">
-                <strong>Location:</strong> {issue.location}
-              </p>
-              <img src={issue.images[0].url} alt="" className="w-full h-96"/>
-            </div>
+            <IssueCard key={issue._id} issue={issue} />
           ))}
-        </Link>
+        </div>
       ) : (
         <p className="text-gray-500">No issues found.</p>
       )}

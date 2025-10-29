@@ -34,10 +34,12 @@ const NavItems = ({ onClose }: { onClose: () => void }) => {
               {item.label}
 
               {/* Hover underline */}
-              <span className="absolute left-0 bottom-0 w-full h-[2px] bg-[#239c47] scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left rounded-full"></span>
+              {!isActive && (
+                <span className="absolute left-0 bottom-0 w-full h-[2px] bg-[#239c47] scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left rounded-full"></span>
+              )}
 
               {/* Active underline animation */}
-              <AnimatePresence mode="wait">
+              <AnimatePresence>
                 {isActive && (
                   <motion.span
                     key="active-underline"

@@ -24,7 +24,6 @@ const SearchFilter = () => {
   }, [query, refetch]);
 
   const issues = data?.issues || [];
-  console.log(issues);
 
     // Category-wise navigation
   const handleRowClick = (category: string) => {
@@ -95,7 +94,7 @@ const SearchFilter = () => {
                 />
                 <Search
                   size={18}
-                  className="absolute right-3 top-2.5 text-gray-500"
+                  className="absolute cursor-pointer right-3 top-2.5 text-gray-500"
                 />
               </div>
 
