@@ -22,6 +22,7 @@ import CreateIssue from "@/pages/dashboard/user/create-issue/CreateIssue";
 import MyIssues from "@/pages/dashboard/user/my-issues/MyIssues";
 import ForgotPassword from "@/pages/forgot-password/ForgotPassword";
 import Water from "@/pages/watar/Water";
+import ResetPassword from "@/pages/forgot-password/ResetPassword";
 
 const router = createBrowserRouter([
   {
@@ -40,6 +41,10 @@ const router = createBrowserRouter([
       {
         path: "/forgot-password",
         element: <ForgotPassword />,
+      },
+      {
+        path: "/reset-password",
+        element: <ResetPassword />,
       },
       {
         path: "/register-otp",

@@ -1,6 +1,7 @@
 import type { Issue } from "@/types";
 import { Link } from "react-router-dom";
 import { TypingAnimation } from "../ui/MotionComponent";
+import { motion } from "framer-motion";
 
 interface IssueCardProps {
   issue: Issue;
@@ -18,7 +19,7 @@ const IssueCard = ({ issue }: IssueCardProps) => {
       : issue.description;
 
   return (
-    <div>
+    <motion.div initial={{ opacity: 0, y: 40 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.3 }}>
       <Link to={`/issues/${issue._id}`}>
         <div className="bg-white shadow-md rounded-xl border hover:shadow-lg transition cursor-pointer overflow-hidden flex flex-col">
           {/* Header: Date, Division, Status */}
@@ -122,7 +123,7 @@ const IssueCard = ({ issue }: IssueCardProps) => {
           </div>
         </div>
       </Link>
-    </div>
+    </motion.div>
   );
 };
 

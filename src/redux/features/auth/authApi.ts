@@ -7,6 +7,13 @@ import { setUser, logout, type AuthState } from "@/redux/features/auth/authSlice
 const baseQuery = fetchBaseQuery({
   baseUrl: `${getBaseUrl()}/api/auth`,
   credentials: "include",
+  prepareHeaders: (headers, { getState }) => {
+    const token = (getState() as any).auth.token;
+    if (token) {
+      headers.set("Authorization", `Bearer ${token}`);
+    }
+    return headers;
+  }
 });
 
 const baseQueryWithReauth: typeof baseQuery = async (args, api, extraOptions) => {
@@ -52,7 +59,6 @@ const baseQueryWithReauth: typeof baseQuery = async (args, api, extraOptions) =>
 
   return result;
 };
-
 
 export const authApi = createApi({
   reducerPath: "authApi",

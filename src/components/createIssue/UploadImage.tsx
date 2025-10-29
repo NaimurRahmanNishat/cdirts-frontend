@@ -62,7 +62,8 @@ const UploadImage = ({ setIssue, currentImages }: UploadImageProps) => {
 
           if (result.success) {
             uploadedImages.push({
-              public_id: `img-${Date.now()}-${i}`,
+              // public_id: `img-${Date.now()}-${i}`,
+              public_id: result.public_id,
               url: result.url,
             });
           } else {

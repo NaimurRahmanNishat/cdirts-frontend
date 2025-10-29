@@ -1,8 +1,9 @@
-import watarOne from "../../assets/hero/watarOne.jpg";
+import watarOne from "../../assets/hero/watarThree.jpg";
 import gasOne from "../../assets/hero/gasOne.jpg";
 import watarTwo from "../../assets/hero/watarTwo.jpg";
 import roadOne from "../../assets/hero/roadOne.jpg";
 import gasTwo from "../../assets/hero/gasTwo.jpg";
+import metro from "../../assets/hero/metro.jpg";
 
 interface HeroImage {
   id: number;
@@ -10,6 +11,7 @@ interface HeroImage {
 }
 
 const heroImage: HeroImage[] = [
+  { id: 0, image: metro },
   { id: 1, image: watarOne },
   { id: 2, image: gasOne },
   { id: 3, image: watarTwo },
@@ -24,7 +26,7 @@ const HeroImageSlider = () => {
         {[...heroImage, ...heroImage].map((img, index) => (
           <div
             key={index}
-            className="flex-shrink-0 w-[1920px] h-[900px]"
+            className="flex-shrink-0 w-[1920px] h-[600px]"
           >
             <img
               src={img.image}

@@ -7,7 +7,7 @@ const Home = () => {
   return (
     <div className="min-h-screen">
       <HeroImageSlider />
-      <div className="pt-[920px] md:pt-[960px]">
+      <div className="pt-[920px] md:pt-[660px]">
         <DivisionIssues />
         <HistoryIssues />
       </div>

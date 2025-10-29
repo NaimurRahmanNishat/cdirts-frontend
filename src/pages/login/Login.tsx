@@ -7,6 +7,7 @@ import { Eye, EyeOff, Lock, Mail, AlertCircle } from "lucide-react";
 import { useAppDispatch } from "@/redux/hooks";
 import { setUser } from "@/redux/features/auth/authSlice";
 import { toast } from "react-toastify";
+import { motion } from "framer-motion";
 
 type LoginInputs = {
   email: string;
@@ -48,8 +49,9 @@ const Login = () => {
 
   return (
     <div className="min-h-screen flex items-center justify-center">
-      <div className="max-w-lg w-full space-y-8 px-4">
-        <div className="bg-white border rounded-2xl shadow-xl p-8">
+      <motion.div initial={{ opacity: 0, y: 40 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.3 }}>
+              <div className="max-w-lg w-full space-y-8">
+        <div className="bg-white border rounded-2xl shadow-xl p-4 sm:p-6 lg:p-8">
           {/* Header */}
           <div className="text-center">
             <div className="mx-auto h-12 w-12 bg-indigo-100 rounded-full flex items-center justify-center">
@@ -177,6 +179,7 @@ const Login = () => {
           </form>
         </div>
       </div>
+      </motion.div>
     </div>
   );
 };

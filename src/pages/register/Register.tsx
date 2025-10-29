@@ -77,7 +77,7 @@ const Register = () => {
 
   return (
     <div className="flex justify-center items-center min-h-screen">
-      <motion.div initial={{ opacity: 0, y: 40 }} animate={{ opacity: 1, y: 0 }} className="w-full max-w-lg">
+      <motion.div initial={{ opacity: 0, y: 40 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.3 }} className="w-full max-w-lg">
         <div className="bg-white border p-6 rounded-2xl shadow-lg">
           <h2 className="text-2xl font-bold text-center mb-6">Create an Account</h2>
 
