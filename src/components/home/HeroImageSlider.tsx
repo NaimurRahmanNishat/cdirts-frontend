@@ -21,7 +21,7 @@ const heroImage: HeroImage[] = [
 
 const HeroImageSlider = () => {
   return (
-    <div className="absolute top-20 left-0 w-full h-[900px] overflow-hidden">
+    <div className="absolute top-20 left-0 w-full h-[600px] overflow-hidden">
       <div className="flex animate-slide">
         {[...heroImage, ...heroImage].map((img, index) => (
           <div

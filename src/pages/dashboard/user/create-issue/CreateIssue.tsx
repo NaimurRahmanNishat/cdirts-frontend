@@ -12,6 +12,8 @@ import type { IssueImage } from "@/types";
 import { useSelector } from "react-redux";
 import type { RootState } from "@/redux/store";
 import { useNavigate } from "react-router-dom";
+import Loading from "@/components/shared/Loading";
+import { motion } from "framer-motion";
 
 interface IssueFormData {
   title: string;
@@ -24,9 +26,7 @@ interface IssueFormData {
 }
 
 const CreateIssue = () => {
-  const { user, isAuthenticated } = useSelector(
-    (state: RootState) => state.auth
-  );
+  const { user, isAuthenticated } = useSelector((state: RootState) => state.auth);
   const navigate = useNavigate();
   const [issue, setIssue] = useState<IssueFormData>({
     title: "",
@@ -49,7 +49,11 @@ const CreateIssue = () => {
     }
   }, [isAuthenticated, navigate]);
 
-  const handleChange = (e: React.ChangeEvent< HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+  const handleChange = (
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+    >
+  ) => {
     const { name, value } = e.target;
     setIssue((prev) => ({ ...prev, [name]: value }));
   };
@@ -97,13 +101,7 @@ const CreateIssue = () => {
         images: issue.images,
       };
 
-      console.log("Creating issue with data:", issueData);
-      console.log("Authenticated user:", user); // Debug user info
-
-      const result = await createIssue(issueData).unwrap();
-
-      console.log("Issue created successfully:", result);
-
+      await createIssue(issueData).unwrap();
       setSuccessMessage("Issue created successfully!");
 
       // Form reset
@@ -131,7 +129,6 @@ const CreateIssue = () => {
         errorMessage = "please login first";
         navigate("/login");
       }
-
       alert(errorMessage);
     }
   };
@@ -139,37 +136,18 @@ const CreateIssue = () => {
   // Show loading or redirect if not authenticated
   if (!isAuthenticated) {
     return (
-      <div className="container mx-auto mt-8 px-4 max-w-2xl">
-        <div className="text-center">
-          <p className="text-lg text-gray-600">Loading...</p>
-        </div>
-      </div>
+      <Loading/>
     );
   }
 
   return (
-    <div className="container mx-auto mt-8">
+    <motion.div initial={{ opacity: 0, y: 40 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.3 }}>
       <h1 className="text-3xl font-bold mb-6 text-center text-gray-800">
         New Issue Create
       </h1>
-
-      {successMessage && (
-        <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-4">
-          {successMessage}
-        </div>
-      )}
-
-      {error && (
-        <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
-          {"data" in error
-            ? (error as any).data.message
-            : "Something went wrong. Please try again."}
-        </div>
-      )}
-
       <form
         onSubmit={handleSubmit}
-        className="space-y-6 bg-white p-6 rounded-lg shadow-md"
+        className="space-y-6 bg-white p-2 lg:p-6 rounded-lg shadow-md"
       >
         <Title issue={issue} handleChange={handleChange} />
         <Categories issue={issue} handleChange={handleChange} />
@@ -182,12 +160,25 @@ const CreateIssue = () => {
           setIssue={handleImagesChange}
           currentImages={issue.images}
         />
+        {successMessage && (
+          <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-4">
+            {successMessage}
+          </div>
+        )}
 
-        <div className="flex items-center">
+        {error && (
+          <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
+            {"data" in error
+              ? (error as any).data.message
+              : "Something went wrong. Please try again."}
+          </div>
+        )}
+
+        <div className="flex w-full items-center">
           <button
             type="submit"
             disabled={isLoading}
-            className={`w-full py-3 px-4 rounded-md font-semibold ${
+            className={`w-full py-3 px-4 rounded-md cursor-pointer font-semibold ${
               isLoading
                 ? "bg-gray-400 cursor-not-allowed"
                 : "bg-indigo-600 hover:bg-indigo-700"
@@ -199,14 +190,14 @@ const CreateIssue = () => {
       </form>
 
       {isLoading && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+        <div className="fixed inset-0 bg-white bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-white p-6 rounded-lg shadow-lg">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600 mx-auto"></div>
             <p className="mt-4 text-center">Issues Creating...</p>
           </div>
         </div>
       )}
-    </div>
+    </motion.div>
   );
 };
 

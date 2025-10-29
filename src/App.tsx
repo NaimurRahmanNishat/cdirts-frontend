@@ -11,14 +11,11 @@ import type { RootState } from "./redux/store";
 const App = () => {
   const dispatch = useDispatch();
   const { isAuthenticated } = useSelector((state: RootState) => state.auth);
-  const { data: userData, isLoading, isError, error } = useGetCurrentUserQuery(undefined, {
-    skip: !isAuthenticated, 
-  });
+  const { data: userData, isLoading, isError, error } = useGetCurrentUserQuery(undefined, {skip: !isAuthenticated});
     useEffect(() => {
     if (userData?.success && userData.data) {
-      // Page refresh-এ user data automatically set হবে
+      // Page refresh-এ user data automatically set
       dispatch(setUser(userData.data));
-      console.log("User data restored after page refresh");
     }
   }, [userData, dispatch]);
 

@@ -23,6 +23,7 @@ import MyIssues from "@/pages/dashboard/user/my-issues/MyIssues";
 import ForgotPassword from "@/pages/forgot-password/ForgotPassword";
 import Water from "@/pages/watar/Water";
 import ResetPassword from "@/pages/forgot-password/ResetPassword";
+import LocationPage from "@/pages/location-page/LocationPage";
 
 const router = createBrowserRouter([
   {
@@ -77,6 +78,10 @@ const router = createBrowserRouter([
       {
         path: "/issues/:issueId",
         element: <SinglePage />,
+      },
+      {
+        path: "/location/:division",
+        element: <LocationPage />,
       },
     ],
   },

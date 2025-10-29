@@ -1,6 +1,7 @@
 import { useParams } from "react-router-dom";
 import Loading from "@/components/shared/Loading";
 import { useGetIssueByIdQuery } from "@/redux/features/issue/issuApi";
+import { motion } from "motion/react";
 
 const SinglePage = () => {
   const { issueId } = useParams<{ issueId: string }>();
@@ -10,11 +11,12 @@ const SinglePage = () => {
   if (error) return <p className="text-red-500">Error loading issue.</p>;
   if (!data?.issue) return <p className="text-gray-500">Issue not found.</p>;
 
-  const { title, category, description, images, location, division, createdAt } = data.issue;
+  const { title, category, description, images, location, division, createdAt, status } = data.issue;
 
   return (
-    <div className="container mx-auto py-8 px-4">
+    <motion.div initial={{ opacity: 0, y: 40 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.3 }} className="container mx-auto py-8">
       <h1 className="text-3xl font-bold mb-4 text-blue-700">{title}</h1>
+      <div className="flex items-center flex-wrap justify-between">
       <div className="flex flex-wrap gap-4 mb-6 text-gray-600">
         <span className="px-3 py-1 bg-blue-100 rounded-full text-sm font-medium capitalize">
           Category: {category}
@@ -28,6 +30,8 @@ const SinglePage = () => {
         <span className="px-3 py-1 bg-yellow-100 rounded-full text-sm font-medium">
           Date: {new Date(createdAt!).toLocaleDateString()}
         </span>
+      </div>
+      <span className="px-3 py-1 bg-red-100 rounded-full text-gray-700 text-sm font-medium mb-4 md:mb-0">{status}</span>
       </div>
 
       {images?.length > 0 && (
@@ -47,7 +51,7 @@ const SinglePage = () => {
         <h2 className="text-xl font-semibold mb-2">Description</h2>
         <p className="text-gray-700">{description}</p>
       </div>
-    </div>
+    </motion.div>
   );
 };
 

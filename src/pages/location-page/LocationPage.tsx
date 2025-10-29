@@ -1,25 +1,38 @@
-import Loading from "@/components/shared/Loading";
-import { IssueCategory } from "../../constants/divisions";
-import type { Issue } from "@/types";
-import { useGetAllIssuesQuery } from "@/redux/features/issue/issuApi";
-import IssueCard from "@/components/shared/IssueCard";
-import { Button } from "@/components/ui/button";
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { useParams } from "react-router-dom";
 import { useState } from "react";
+import { useGetAllIssuesQuery } from "@/redux/features/issue/issuApi";
+import { BangladeshDivision } from "@/constants/divisions";
+import type { Issue } from "@/types";
+import Loading from "@/components/shared/Loading";
+import IssueCard from "@/components/shared/IssueCard";
+import { AuroraText } from "@/components/ui/aurora-text";
+import { Button } from "@/components/ui/button";
 
-const Water = () => {
+const LocationPage = () => {
+  const { division } = useParams<{ division: keyof typeof BangladeshDivision }>();
   const [page, setPage] = useState<number>(1);
-  const { data, isLoading, isFetching, error } = useGetAllIssuesQuery({
-    category: IssueCategory.WATER,
-    page: 1,
-    limit: 10,
-  });
+  const limit = 10;
 
+  // API call
+  const { data, isLoading, isFetching, isError, error } = useGetAllIssuesQuery({
+      division: BangladeshDivision[division!],
+      page,
+      limit,
+    },
+    { skip: !division }
+  );
+
+  // first load (page = 1)
   if (isLoading) return <Loading />;
-  if (error)
+  if (isError)
     return (
-      <p className="text-red-500 text-center">Error loading water issues.</p>
+      <p className="text-center mt-10 text-red-500">
+        Failed to load issues. {String((error as any)?.data?.message || "")}
+      </p>
     );
 
+  // Safe fallback
   const issues: Issue[] = data?.issues ?? [];
   const totalPages = data?.pagination?.pages ?? 1;
 
@@ -28,9 +41,9 @@ const Water = () => {
   const handleNext = () => setPage((prev) => Math.min(prev + 1, totalPages));
 
   return (
-    <div className="container mx-auto py-8">
-      <h1 className="text-2xl font-bold text-center mb-6 text-blue-700">
-        Water Issues
+    <div >
+      <h1 className="text-3xl font-bold my-6 text-center">
+        <AuroraText>Issues in {BangladeshDivision[division!]}</AuroraText>
       </h1>
 
       {/* open new page then loading */}
@@ -76,11 +89,13 @@ const Water = () => {
         </>
       ) : (
         <div className="flex items-center justify-center h-96">
-          <p className="text-center text-gray-500">No issues found.</p>
+          <p className="text-center text-gray-500">
+            No issues found in {BangladeshDivision[division!]}
+          </p>
         </div>
       )}
     </div>
   );
 };
 
-export default Water;
+export default LocationPage;
