@@ -5,6 +5,7 @@ import AdminDashboard from "./AdminDashboard";
 import UserDashboard from "./UserDashboard";
 import { ToastContainer } from "react-toastify";
 import DashboardHeader from "@/components/dashboardHeader/DashboardHeader";
+import CategoryAdminDashboard from "./CategoryAdminDashboard";
 
 const DashboardLayout = () => {
   const { user } = useSelector((state: RootState) => state.auth);
@@ -18,6 +19,8 @@ const DashboardLayout = () => {
     switch (user?.role) {
       case "admin":
         return <AdminDashboard />;
+      case "categoryadmin":
+        return <CategoryAdminDashboard />;
       case "user":
         return <UserDashboard />;
       default:

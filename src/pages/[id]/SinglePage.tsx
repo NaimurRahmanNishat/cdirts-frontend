@@ -2,6 +2,7 @@ import { useParams } from "react-router-dom";
 import Loading from "@/components/shared/Loading";
 import { useGetIssueByIdQuery } from "@/redux/features/issue/issuApi";
 import { motion } from "motion/react";
+import Comments from "@/components/shared/Comments";
 
 const SinglePage = () => {
   const { issueId } = useParams<{ issueId: string }>();
@@ -46,10 +47,16 @@ const SinglePage = () => {
           ))}
         </div>
       )}
-
-      <div className="bg-white p-6 rounded-lg shadow-md">
-        <h2 className="text-xl font-semibold mb-2">Description</h2>
+      {/* Description */}
+      <div className="bg-white py-6 px-4 rounded-lg shadow-md">
         <p className="text-gray-700">{description}</p>
+      </div>
+
+      {/* Comments */}
+      <div className="py-6 md:py-8 lg:py-12">
+        <h1 className="text-2xl font-bold mb-4 text-slate-500">Comments</h1>
+        <p className="text-gray-500">Comments section coming soon...</p>
+        <Comments issueId={issueId!} />
       </div>
     </motion.div>
   );

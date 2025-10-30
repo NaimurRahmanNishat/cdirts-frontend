@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import type { ActivateUserPayload, ActivateUserResponse, ForgotPasswordPayload, ForgotPasswordResponse, LoginResponse, LogoutResponse, RefreshTokenResponse, RegisterResponse, ResetPasswordPayload, ResetPasswordResponse, SocialAuthPayload, SocialAuthResponse, UpdateProfilePayload, UpdateProfileResponse, UserLoginPayload, UserRegisterPayload } from "@/types";
 import { getBaseUrl } from "@/utils/getBaseUrl";
-import { createApi, fetchBaseQuery, type BaseQueryApi, type FetchArgs } from "@reduxjs/toolkit/query/react";
+import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { setUser, logout, type AuthState } from "@/redux/features/auth/authSlice";
 
 const baseQuery = fetchBaseQuery({
@@ -12,14 +12,15 @@ const baseQuery = fetchBaseQuery({
     if (token) {
       headers.set("Authorization", `Bearer ${token}`);
     }
+    headers.set("Content-Type", "application/json"); // ✅ এই লাইন যোগ করো
     return headers;
-  }
+  },
 });
 
-const baseQueryWithReauth = async (args: string | FetchArgs, api: BaseQueryApi, extraOptions: object) => {
+const baseQueryWithReauth: typeof baseQuery = async (args, api, extraOptions) => {
   let result = await baseQuery(args, api, extraOptions);
 
-  const skipReauthUrls = ["/login", "/register", "/refresh-token", "/forgot-password", "/reset-password"];
+  const skipReauthUrls = ["/login", "/register", "/activate-user", "/refresh-token", "/forgot-password", "/reset-password"];
   const url = typeof args === "string" ? args : args.url;
 
   // If only user login and url skip if not then refresh 

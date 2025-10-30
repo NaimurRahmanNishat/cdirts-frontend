@@ -1,6 +1,6 @@
+// ================================= API User Types =================================
 
-// User Types 
-export type Role = "admin" | "user";
+export type Role = "user" | "categoryadmin" | "admin";
 
 export interface TUser {
   _id: string;
@@ -115,7 +115,7 @@ export interface UpdateProfilePayload {
 }
 
 
-// issue types 
+// ================================= API issue types ==================================
 
 export interface IssueImage {
   public_id: string;
@@ -215,4 +215,40 @@ export interface EditIssueResponse {
   success: boolean;
   message: string;
   issue: Issue;
+}
+
+
+// ================================= API Review Reply type =================================
+export interface IReply {
+  author: string; 
+  comment: string;
+  createdAt?: string;
+}
+
+// Review type
+export interface IReview {
+  _id: string;
+  issue: string; 
+  author: string; 
+  comment: string;
+  createdAt: string;
+  replies: IReply[];
+}
+
+// Request body for creating a review
+export interface CreateReviewRequest {
+  issueId: string;
+  data: {
+    author?: string; 
+    comment: string;
+  };
+}
+
+// Request body for adding a reply
+export interface AddReplyRequest {
+  reviewId: string;
+  data: {
+    author: string;
+    comment: string;
+  };
 }

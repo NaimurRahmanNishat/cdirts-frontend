@@ -1,6 +1,6 @@
-import { Link, NavLink } from "react-router-dom";
-import { useState } from "react";
 import { Menu, X } from "lucide-react";
+import { useState } from "react";
+import { Link, NavLink } from "react-router-dom";
 import logo from "../../assets/logo.png";
 
 interface INavItem {
@@ -9,17 +9,16 @@ interface INavItem {
 }
 
 const navItems: INavItem[] = [
-  { path: "/dashboard/admin", label: "Dashboard" },
-  { path: "/dashboard/vendor-management", label: "Report Issues" },
+  { path: "/dashboard/categoryadmin", label: "Dashboard" },
+  { path: "/dashboard/status-management", label: "Status Management" },
   { path: "/dashboard/user-management", label: "User Management" },
   { path: "/dashboard/profile-settings", label: "Profile Settings" },
 ];
 
-const AdminDashboard = () => {
-  const [menuOpen, setMenuOpen] = useState<boolean>(false);
-
+const CategoryAdminDashboard = () => {
+    const [menuOpen, setMenuOpen] = useState<boolean>(false);
   return (
-    <div  className="bg-white md:h-screen flex flex-col shadow-md">
+        <div  className="bg-white md:h-screen flex flex-col shadow-md">
       {/* Header Section */}
       <div className="flex justify-between md:justify-center items-center p-5 border-b">
         <div className="flex flex-col items-center justify-center">
@@ -107,7 +106,7 @@ const AdminDashboard = () => {
         </ul>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default AdminDashboard;
+export default CategoryAdminDashboard;

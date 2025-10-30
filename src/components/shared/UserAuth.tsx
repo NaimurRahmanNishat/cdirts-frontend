@@ -44,6 +44,7 @@ const UserAuth = () => {
 
   const handleProfileClick = () => {
     if (user?.role === "user") navigate("/dashboard/user");
+    else if (user?.role === "categoryadmin") navigate("/dashboard/categoryadmin");
     else if (user?.role === "admin") navigate("/dashboard/admin");
   };
 
@@ -83,7 +84,7 @@ const UserAuth = () => {
                 handleProfileClick();
                 setIsOpen(false);
               }}
-              className="text-left px-3 py-2 rounded-md hover:bg-[#f4f4f4] transition font-medium"
+              className="text-left cursor-pointer px-3 py-2 rounded-md hover:bg-[#f4f4f4] transition font-medium"
             >
               Profile
             </button>
@@ -92,7 +93,7 @@ const UserAuth = () => {
                 handleLogout();
                 setIsOpen(false);
               }}
-              className="text-left px-3 py-2 rounded-md hover:bg-red-50 hover:text-red-600 transition font-medium"
+              className="text-left cursor-pointer px-3 py-2 rounded-md hover:bg-red-50 hover:text-red-600 transition font-medium"
             >
               Logout
             </button>

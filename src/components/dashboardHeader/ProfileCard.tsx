@@ -5,7 +5,6 @@ import type { RootState } from "@/redux/store";
 
 interface Props {
   setMenuOpen(value: boolean): void;
-  // handleLogout: () => void;
 }
 
 const ProfileCard = ({ setMenuOpen }: Props) => {
@@ -14,6 +13,7 @@ const ProfileCard = ({ setMenuOpen }: Props) => {
 
   const handleNavigate = () => {
     if (user?.role === "admin") navigate("/dashboard/profile-settings");
+    else if (user?.role === "categoryadmin") navigate("/dashboard/profile-settings");
     else if (user?.role === "user") navigate("/dashboard/profile-settings");
     setMenuOpen(false);
   };
@@ -54,14 +54,6 @@ const ProfileCard = ({ setMenuOpen }: Props) => {
             >
               Profile
             </button>
-          </li>
-          <li>
-            {/* <button
-              onClick={handleLogout}
-              className="block cursor-pointer w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-100 dark:hover:bg-gray-700 transition"
-            >
-              Logout
-            </button> */}
           </li>
         </ul>
       </div>

@@ -1,7 +1,6 @@
 import App from "@/App";
 import Home from "@/pages/home/Home";
 import Login from "@/pages/login/Login";
-import Register from "@/pages/register/Register";
 import { createBrowserRouter } from "react-router-dom";
 import ProtectedRoute from "./protectedRoute";
 import DashboardLayout from "@/pages/dashboard/DashboardLayout";
@@ -24,6 +23,11 @@ import ForgotPassword from "@/pages/forgot-password/ForgotPassword";
 import Water from "@/pages/watar/Water";
 import ResetPassword from "@/pages/forgot-password/ResetPassword";
 import LocationPage from "@/pages/location-page/LocationPage";
+import CategoryAdminDashboardMain from "@/pages/dashboard/categoryadmin/dashboard/CategoryAdminDashboardMain";
+import StatusManagement from "@/pages/dashboard/categoryadmin/status-management/StatusManagement";
+import CategoryAdminProfile from "@/pages/dashboard/categoryadmin/profile/CategoryAdminProfile";
+import UserCategoryAdmin from "@/pages/dashboard/categoryadmin/user-management/UserCategoryAdmin";
+import Register from "@/pages/register/Register";
 
 const router = createBrowserRouter([
   {
@@ -36,6 +40,14 @@ const router = createBrowserRouter([
         element: <Home />,
       },
       {
+        path: "/register",
+        element: <Register />,
+      },
+      {
+        path: "/register-otp",
+        element: <ActivateUser />,
+      },
+      {
         path: "/login",
         element: <Login />,
       },
@@ -46,14 +58,6 @@ const router = createBrowserRouter([
       {
         path: "/reset-password",
         element: <ResetPassword />,
-      },
-      {
-        path: "/register-otp",
-        element: <ActivateUser />,
-      },
-      {
-        path: "/register",
-        element: <Register />,
       },
       {
         path: "/electricity",
@@ -109,6 +113,40 @@ const router = createBrowserRouter([
       {
         path: "profile-settings", // children relative path
         element: <ProfileSettings />,
+      },
+
+      // category admin routes
+      {
+        path: "categoryadmin", // children relative path
+        element: (
+          <ProtectedRoute role="categoryadmin">
+            <CategoryAdminDashboardMain />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "status-management", // children relative path
+        element: (
+          <ProtectedRoute role="categoryadmin">
+            <StatusManagement />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "user-management", // children relative path
+        element: (
+          <ProtectedRoute role="categoryadmin">
+            <UserCategoryAdmin />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "profile-settings", // children relative path
+        element: (
+          <ProtectedRoute role="categoryadmin">
+            <CategoryAdminProfile />
+          </ProtectedRoute>
+        ),
       },
 
       // admin routes

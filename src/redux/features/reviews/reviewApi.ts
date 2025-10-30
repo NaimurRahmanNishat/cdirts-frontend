@@ -1,40 +1,6 @@
+import type { AddReplyRequest, CreateReviewRequest, IReview } from "@/types";
 import { getBaseUrl } from "@/utils/getBaseUrl";
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-
-// Reply type
-export interface IReply {
-  author: string; 
-  comment: string;
-  createdAt?: string;
-}
-
-// Review type
-export interface IReview {
-  _id: string;
-  issue: string; 
-  author: string; 
-  comment: string;
-  createdAt: string;
-  replies: IReply[];
-}
-
-// Request body for creating a review
-export interface CreateReviewRequest {
-  issueId: string;
-  data: {
-    author: string; 
-    comment: string;
-  };
-}
-
-// Request body for adding a reply
-export interface AddReplyRequest {
-  reviewId: string;
-  data: {
-    author: string;
-    comment: string;
-  };
-}
 
 export const reviewApi = createApi({
   reducerPath: "reviewApi",
@@ -63,8 +29,14 @@ export const reviewApi = createApi({
       }),
       invalidatesTags: ["Review"],
     }),
+
+    // Get all reviews for an issue
+    getReviewsByIssue: builder.query<IReview[], string>({
+      query: (issueId) => `/issue/${issueId}`,
+      providesTags: ["Review"],
+    }),
   }),
 });
 
-export const { useCreateReviewMutation, useAddReplyMutation } = reviewApi;
+export const { useCreateReviewMutation, useAddReplyMutation, useGetReviewsByIssueQuery } = reviewApi;
 export default reviewApi;

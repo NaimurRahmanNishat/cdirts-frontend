@@ -7,7 +7,7 @@ interface DevisionProps {
 
 const BangladeshDivision = [
   "Dhaka",
-  "Chittagong",
+  "Chattogram",
   "Khulna",
   "Barisal",
   "Sylhet",
