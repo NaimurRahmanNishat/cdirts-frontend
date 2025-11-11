@@ -1,42 +1,41 @@
-import type { AddReplyRequest, CreateReviewRequest, IReview } from "@/types";
+import type { IReview } from "@/types";
 import { getBaseUrl } from "@/utils/getBaseUrl";
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
 export const reviewApi = createApi({
   reducerPath: "reviewApi",
   baseQuery: fetchBaseQuery({
-    baseUrl: `${getBaseUrl()}/api/review`,
+    baseUrl: `${getBaseUrl()}/api/v1/review`,
     credentials: "include",
   }),
   tagTypes: ["Review"],
   endpoints: (builder) => ({
-    // Create a new review
-    createReview: builder.mutation<IReview, CreateReviewRequest>({
-      query: ({ issueId, data }) => ({
+    // Create Review (comment)
+    createReview: builder.mutation<IReview, { issueId: string; comment: string }>({
+      query: ({ issueId, comment }) => ({
         url: `/create-review/${issueId}`,
         method: "POST",
-        body: data,
+        body: { comment },
       }),
-      invalidatesTags: ["Review"],
+      invalidatesTags: (_result, _error, { issueId }) => [{ type: "Review", id: issueId }],
     }),
 
-    // Add a reply to an existing review
-    addReply: builder.mutation<IReview, AddReplyRequest>({
-      query: ({ reviewId, data }) => ({
+    // Add Reply
+    addReply: builder.mutation<IReview, { reviewId: string; comment: string; issueId: string }>({
+      query: ({ reviewId, comment }) => ({
         url: `/add-reply/${reviewId}`,
         method: "POST",
-        body: data,
+        body: { comment },
       }),
-      invalidatesTags: ["Review"],
+      invalidatesTags: (_result, _error, { issueId }) => [{ type: "Review", id: issueId }],
     }),
 
-    // Get all reviews for an issue
+    // Get all Reviews by Issue
     getReviewsByIssue: builder.query<IReview[], string>({
       query: (issueId) => `/issue/${issueId}`,
-      providesTags: ["Review"],
+      providesTags: (_result, _error, issueId) => [{ type: "Review", id: issueId }],
     }),
   }),
 });
 
 export const { useCreateReviewMutation, useAddReplyMutation, useGetReviewsByIssueQuery } = reviewApi;
-export default reviewApi;

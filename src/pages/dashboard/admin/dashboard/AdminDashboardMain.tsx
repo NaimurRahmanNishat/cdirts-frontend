@@ -102,7 +102,7 @@ const AdminDashboardMain = () => {
       {/* Bottom Section */}
       <div className="flex flex-col lg:flex-row gap-6 w-full">
         {/* Left Chart */}
-        <div className="w-full lg:w-[60%] bg-white shadow border rounded-lg p-4 h-[400px] sm:h-[440px]">
+        <div className="w-full lg:w-[60%] bg-white shadow border rounded-lg p-4 h-fit sm:h-[400px] md:h-[440px]">
           <Chartar stats={stats} />
         </div>
 

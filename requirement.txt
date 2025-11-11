@@ -1,0 +1,220 @@
+// total api count
+
+//  =================auth & user api================
+1. register (user, category-admin, super-admin)  -------------------------------------------------------- 
+2. active user (not use category-admin because super-admin create category-admin)  ---------------------- 
+3. login  ----------------------------------------------------------------------------------------------- 
+4. refresh token  --------------------------------------------------------------------------------------- 
+5. social authintication  ------------------------------------------------------------------------------- 
+6. forgot password  ------------------------------------------------------------------------------------- 
+7. reset password  -------------------------------------------------------------------------------------- 
+8. logout  ---------------------------------------------------------------------------------------------- 
+9. update profile  --------------------------------------------------------------------------------------
+10. get all user (access category-admin & super-admin only access)  -------------------------------------
+11. get all category-admin (access only super-admin)  ---------------------------------------------------
+12. update category-admin (likes water category to gas category)  ---------------------------------------
+13. delete category-admin  ------------------------------------------------------------------------------
+
+
+
+// =================issue api==================
+1. create-issue  ---------------------------------------------------------------------------------------- 
+2. get all issue (category-admin & super-admin access in dashboard other wise all access in issue)  ----- 
+3. single issue  ---------------------------------------------------------------------------------------- 
+4. edit issue  ------------------------------------------------------------------------------------------
+5. update issue (access in category-admin & super-admin)  -----------------------------------------------
+
+
+
+// =================review api=================
+1. add new review  --------------------------------------------------------------------------------------
+2. reply new review  ------------------------------------------------------------------------------------
+3. edit review  -----------------------------------------------------------------------------------------
+4. delete review  ---------------------------------------------------------------------------------------
+5. get all reviw (access in category-admin & super-admin)  ----------------------------------------------
+
+
+
+// =================stats api===================
+1. user-stats  ------------------------------------------------------------------------------------------ 
+2. category-admin-stats  -------------------------------------------------------------------------------- 
+3. super-admin-stats  ----------------------------------------------------------------------------------- 
+4. update-status (user email send to message category-admin or super-admin)  ----------------------------
+5. emergency-message (user send to message category-admin)  ---------------------------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+frontend/
+├── src/
+│   ├── assets/
+│   │   ├── (hero/image)
+│   │   └── image
+│   │
+│   ├── components/
+│   │   ├── adminComponents/
+│   │   │   ├── CategoryAdminTable.tsx
+│   │   │   └── CreateCategoryAdmin.tsx
+│   │   │   
+│   │   ├── createIssue/
+│   │   │   ├── Categories.tsx
+│   │   │   ├── Description.tsx
+│   │   │   ├── Division.tsx
+│   │   │   ├── IssueDate.tsx
+│   │   │   ├── Location.tsx
+│   │   │   ├── Tittle.tsx
+│   │   │   └── UploadImage.tsx
+│   │   │
+│   │   ├── dashboardHeader/
+│   │   │   ├── DeshboardHeader.tsx
+│   │   │   └── ProfileCard.tsx
+│   │   │
+│   │   ├── home/
+│   │   │   ├── DivisionIssues.tsx
+│   │   │   ├── HeroImageSlider.tsx
+│   │   │   ├── InProcessIssues.tsx
+│   │   │   ├── PendingIssues.tsx
+│   │   │   └── SolvedIssues.tsx
+│   │   │
+│   │   ├── shared/
+│   │   │   ├── Comments.tsx
+│   │   │   ├── Error.tsx
+│   │   │   ├── Footer.tsx
+│   │   │   ├── Header.tsx
+│   │   │   ├── IssueCard.tsx
+│   │   │   ├── Loading.tsx
+│   │   │   ├── NavItems.tsx
+│   │   │   ├── SearchFilter.tsx
+│   │   │   └── UserAuth.tsx
+│   │   │
+│   │   └── ui/(all ui file)
+│   │
+│   ├── constants/
+│   │   └── division.ts
+|   |    
+│   ├── lib/
+│   │   └── utils.
+|   |  
+│   ├── pages/
+│   │   ├── [id]/
+│   │   │   └── SinglePage.tsx
+│   │   │   
+│   │   ├── dashboard/
+│   │   │   ├── admin/
+│   │   │   │   ├── dashboard/
+│   │   │   │   │   ├── AdminDashboardMain.tsx
+│   │   │   │   │   ├── Chartar.tsx
+│   │   │   │   │   └── LineChart.tsx
+│   │   │   │   │
+│   │   │   │   ├── settings/
+│   │   │   │   │   └── Seggings.tsx
+│   │   │   │   │
+│   │   │   │   ├── user-management/
+│   │   │   │   │   └── UserManagement.tsx
+│   │   │   │   │
+│   │   │   │   └── category-admin-management/
+│   │   │   │       └── VendorManagement.tsx
+│   │   │   │
+│   │   │   ├── categoryadmin/
+│   │   │   │   ├── dashboard/
+│   │   │   │   │   ├── CategoryAdminDashboardMain.tsx
+│   │   │   │   │   ├── Chartar.tsx
+│   │   │   │   │   └── LineChart.tsx
+│   │   │   │   │
+│   │   │   │   ├── profile/
+│   │   │   │   │   └── CategoryAdminProfile.tsx
+│   │   │   │   │
+│   │   │   │   ├── status-management/
+│   │   │   │   │   └── StatusManagement.tsx
+│   │   │   │   │
+│   │   │   │   └── user-management/
+│   │   │   │       └── UserManagement.tsx
+│   │   │   │
+│   │   │   ├── user/
+│   │   │   │   ├── create-issue/
+│   │   │   │   │   └── CreateIssue.tsx
+│   │   │   │   │
+│   │   │   │   ├── dashboard/
+│   │   │   │   │   ├── UserDashboardMain.tsx
+│   │   │   │   │   ├── Chartar.tsx
+│   │   │   │   │   └── LineChart.tsx
+│   │   │   │   │
+│   │   │   │   ├── my-issue/
+│   │   │   │   │   └── UserDashboardMain.tsx
+│   │   │   │   │
+│   │   │   │   └── profile-settings/
+│   │   │   │       └── ProfileSettings.tsx
+│   │   │   │
+│   │   │   ├── AdminDashboard.tsx
+│   │   │   ├── CategoryAdminDashboard.tsx
+│   │   │   ├── DashboardLayout.tsx
+│   │   │   └── UserDashboard.tsx
+│   │   │ 
+│   │   ├── electricity/
+│   │   │   └── Electricity.tsx
+│   │   │
+│   │   ├── forgot-password/
+│   │   │   ├── ForgotPassword.tsx
+│   │   │   └── ResetPassword.tsx
+│   │   │
+│   │   ├── gas/
+│   │   │   └── Gas.tsx
+│   │   │
+│   │   ├── home/
+│   │   │   └── Home.tsx
+│   │   │
+│   │   ├── location-page/
+│   │   │   └── LocationPage.tsx
+│   │   │
+│   │   ├── Login/
+│   │   │   └── Login.tsx
+│   │   │ 
+│   │   ├── others/
+│   │   │   └── Others.tsx
+│   │   │ 
+│   │   ├── register/
+│   │   │   ├── Activate.tsx
+│   │   │   └── Register.tsx
+│   │   │ 
+│   │   ├── road/
+│   │   │   └── Road.tsx
+│   │   │ 
+│   │   └── water/
+│   │       └── Water.tsx 
+│   │   
+│   ├── redux/
+│   │   ├── features/
+│   │   ├── hooks.ts
+│   │   └── store.ts
+│   │
+│   ├── routes/
+│   │   ├── protectedRoute.ts
+│   │   └── router.ts
+│   │   
+│   ├── types/
+│   │   └── index.ts
+│   │   
+│   ├── utils/
+│   │   └── getBaseUrl.ts
+│   │   
+│   ├── App.css
+│   │   
+│   ├── App.tsx
+│   │   
+│   ├── index.css
+│   │   
+│   ├── main.tsx
+│   │   
+│   └── vite-env.d.ts
+│
+├── index.html
+└── package.json

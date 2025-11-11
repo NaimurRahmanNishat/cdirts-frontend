@@ -14,6 +14,6 @@ export const IssueCategory = {
   ELECTRICITY: "electricity",
   WATER: "water",
   GAS: "gas",
-  BROKEN_ROAD: "broken-road",
+  BROKEN_ROAD: "broken_road",
   OTHER: "other",
 } as const;

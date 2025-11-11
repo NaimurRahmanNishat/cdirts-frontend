@@ -20,7 +20,7 @@ const IssueCard = ({ issue }: IssueCardProps) => {
 
   return (
     <motion.div initial={{ opacity: 0, y: 40 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.3 }}>
-      <Link to={`/issues/${issue._id}`}>
+      <Link to={`/${issue._id}`}>
         <div className="bg-white shadow-md rounded-xl border hover:shadow-lg transition cursor-pointer overflow-hidden flex flex-col">
           {/* Header: Date, Division, Status */}
           <div className="flex justify-between items-center px-4 py-3 border-b">

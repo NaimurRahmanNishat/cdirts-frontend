@@ -9,7 +9,7 @@ const BangladeshDivision = [
   "Dhaka",
   "Chattogram",
   "Khulna",
-  "Barisal",
+  "Barishal",
   "Sylhet",
   "Rajshahi",
   "Rangpur",

@@ -10,8 +10,8 @@ interface INavItem {
 
 const navItems: INavItem[] = [
   { path: "/dashboard/admin", label: "Dashboard" },
-  { path: "/dashboard/vendor-management", label: "Report Issues" },
-  { path: "/dashboard/user-management", label: "User Management" },
+  { path: "/dashboard/admin-management", label: "Admin Management" },
+  { path: "/dashboard/user-management-admin", label: "User Management" },
   { path: "/dashboard/profile-settings", label: "Profile Settings" },
 ];
 

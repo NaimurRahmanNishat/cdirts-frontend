@@ -1,9 +1,10 @@
+// src/redux/store.ts
 import { configureStore } from '@reduxjs/toolkit';
 import { authApi } from './features/auth/authApi';
 import authReducer from './features/auth/authSlice';
 import { issueApi } from './features/issue/issuApi';
-import reviewApi from './features/reviews/reviewApi';
 import statsApi from './features/stats/statsApi';
+import { reviewApi } from './features/reviews/reviewApi';
 
 export const store = configureStore({
   reducer: {

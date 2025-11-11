@@ -36,7 +36,7 @@ export interface UserStatsResponse {
 const statsApi = createApi({
   reducerPath: "statsApi",
   baseQuery: fetchBaseQuery({
-    baseUrl: `${getBaseUrl()}/api/stats`,
+    baseUrl: `${getBaseUrl()}/api/v1/stats`,
     credentials: "include",
   }),
   tagTypes: ["Stats"],

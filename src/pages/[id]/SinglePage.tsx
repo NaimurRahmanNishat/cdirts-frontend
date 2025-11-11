@@ -39,7 +39,7 @@ const SinglePage = () => {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
           {images.map((img) => (
             <img
-              key={img.public_id}
+              key={img.public_id || img.url}
               src={img.url}
               alt={title}
               className="w-full h-64 object-cover rounded-lg shadow-md"
@@ -56,10 +56,10 @@ const SinglePage = () => {
       <div className="py-6 md:py-8 lg:py-12">
         <h1 className="text-2xl font-bold mb-4 text-slate-500">Comments</h1>
         <p className="text-gray-500">Comments section coming soon...</p>
-        <Comments issueId={issueId!} />
+        <Comments />
       </div>
     </motion.div>
   );
-};
+};  
 
 export default SinglePage;

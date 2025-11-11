@@ -8,16 +8,17 @@ import type {
   IssueByIdResponse,
   PaginatedIssuesResponse,
   CreateIssueResponse,
-  ApproveIssueResponse
+  ApproveIssueResponse,
+  IReview
 } from "@/types";
 
 export const issueApi = createApi({
   reducerPath: "issueApi",
   baseQuery: fetchBaseQuery({
-    baseUrl: `${getBaseUrl()}/api/issue`,
+    baseUrl: `${getBaseUrl()}/api/v1/issue`,
     credentials: "include",
   }),
-  tagTypes: ["Issue"],
+  tagTypes: ["Issue", "Review"],
   endpoints: (builder) => ({
     // Create issue
     createIssue: builder.mutation<CreateIssueResponse, CreateIssuePayload>({
@@ -59,19 +60,13 @@ export const issueApi = createApi({
           method: "GET",
         };
       },
-      providesTags: (result) =>
-        result
-          ? [
-              ...result.issues.map((i) => ({ type: "Issue" as const, id: i._id })),
-              { type: "Issue", id: "LIST" },
-            ]
-          : [{ type: "Issue", id: "LIST" }],
+      providesTags: ["Issue"],
     }),
 
     // Get single issue by id
     getIssueById: builder.query<IssueByIdResponse, string>({
       query: (issueId) => ({
-        url: `/single-issue/${issueId}`,
+        url: `/${issueId}`,
         method: "GET",
       }),
       providesTags: (_result, _error, id) => [{ type: "Issue", id }],
@@ -87,6 +82,32 @@ export const issueApi = createApi({
       invalidatesTags: (result, _error, { issueId }) =>
         result ? [{ type: "Issue", id: issueId }, { type: "Issue", id: "LIST" }] : [],
     }),
+
+        // Create Review (comment)
+    createReview: builder.mutation<IReview, { issueId: string; comment: string }>({
+      query: ({ issueId, comment }) => ({
+        url: `/create-review/${issueId}`,
+        method: "POST",
+        body: { comment },
+      }),
+      invalidatesTags: (_result, _error, { issueId }) => [{ type: "Review", id: issueId }],
+    }),
+
+    // Add Reply
+    addReply: builder.mutation<IReview, { reviewId: string; comment: string; issueId: string }>({
+      query: ({ reviewId, comment }) => ({
+        url: `/add-reply/${reviewId}`,
+        method: "POST",
+        body: { comment },
+      }),
+      invalidatesTags: (_result, _error, { issueId }) => [{ type: "Review", id: issueId }],
+    }),
+
+    // Get all Reviews by Issue
+    getReviewsByIssue: builder.query<IReview[], string>({
+      query: (issueId) => `/issue/${issueId}`,
+      providesTags: (_result, _error, issueId) => [{ type: "Review", id: issueId }],
+    }),
   }),
 });
 
@@ -96,4 +117,7 @@ export const {
   useGetAllIssuesQuery,
   useGetIssueByIdQuery,
   useEditIssueMutation,
+  useCreateReviewMutation,
+  useAddReplyMutation,
+  useGetReviewsByIssueQuery,
 } = issueApi;

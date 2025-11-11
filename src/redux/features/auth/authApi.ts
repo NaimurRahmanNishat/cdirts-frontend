@@ -1,23 +1,20 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import type { ActivateUserPayload, ActivateUserResponse, ForgotPasswordPayload, ForgotPasswordResponse, LoginResponse, LogoutResponse, RefreshTokenResponse, RegisterResponse, ResetPasswordPayload, ResetPasswordResponse, SocialAuthPayload, SocialAuthResponse, UpdateProfilePayload, UpdateProfileResponse, UserLoginPayload, UserRegisterPayload } from "@/types";
+// src/redux/features/auth/authApi.ts
 import { getBaseUrl } from "@/utils/getBaseUrl";
-import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
+import { createApi, fetchBaseQuery, type BaseQueryFn, type FetchArgs, type BaseQueryApi } from "@reduxjs/toolkit/query/react";
 import { setUser, logout, type AuthState } from "@/redux/features/auth/authSlice";
+import type { ActivateUserPayload, ActivateUserResponse, DeleteCategoryAdminResponse, ForgotPasswordPayload, ForgotPasswordResponse, GetAllCategoryAdminsResponse, GetAllUsersResponse, LoginResponse, LogoutResponse, RefreshTokenResponse, RegisterResponse, ResetPasswordPayload, ResetPasswordResponse, SocialAuthPayload, SocialAuthResponse, UpdateCategoryAdminPayload, UpdateCategoryAdminResponse, UpdateUserProfilePayload, UpdateUserProfileResponse, UserLoginPayload, UserRegisterPayload } from "@/types/authType";
 
 const baseQuery = fetchBaseQuery({
-  baseUrl: `${getBaseUrl()}/api/auth`,
+  baseUrl: `${getBaseUrl()}/api/v1/auth`,
   credentials: "include",
-  prepareHeaders: (headers, { getState }) => {
-    const token = (getState() as any).auth.token;
-    if (token) {
-      headers.set("Authorization", `Bearer ${token}`);
-    }
-    headers.set("Content-Type", "application/json"); // ✅ এই লাইন যোগ করো
+  prepareHeaders: (headers) => {
+    headers.set("Content-Type", "application/json");
     return headers;
   },
 });
 
-const baseQueryWithReauth: typeof baseQuery = async (args, api, extraOptions) => {
+const baseQueryWithReauth: BaseQueryFn<FetchArgs, BaseQueryApi> = async (args, api, extraOptions): Promise<any> => {
   let result = await baseQuery(args, api, extraOptions);
 
   const skipReauthUrls = ["/login", "/register", "/activate-user", "/refresh-token", "/forgot-password", "/reset-password"];
@@ -27,7 +24,7 @@ const baseQueryWithReauth: typeof baseQuery = async (args, api, extraOptions) =>
   const state = api.getState() as { auth: AuthState };
   const isAuthenticated = state.auth.isAuthenticated;
 
-  if (result.error && result.error.status === 401 && !skipReauthUrls.includes(url) && isAuthenticated) {
+  if (result?.error && result?.error.status === 401 && !skipReauthUrls.includes(url) && isAuthenticated) {
     console.log("Access token expired, attempting refresh...");
 
     try {
@@ -65,7 +62,7 @@ export const authApi = createApi({
   baseQuery: baseQueryWithReauth,
   tagTypes: ["Auth", "User"],
   endpoints: (builder) => ({
-    // Register user
+    // 1. Register user
     register: builder.mutation<RegisterResponse, UserRegisterPayload>({
       query: (userData) => ({
         url: "/register",
@@ -75,7 +72,7 @@ export const authApi = createApi({
       invalidatesTags: ["Auth"],
     }),
 
-    // Activate user account
+    // 2. Activate user account
     activateUser: builder.mutation<ActivateUserResponse, ActivateUserPayload>({
       query: (data) => ({
         url: "/activate-user",
@@ -85,7 +82,7 @@ export const authApi = createApi({
       invalidatesTags: ["Auth"],
     }),
 
-    // Login user
+    // 3. Login user
     login: builder.mutation<LoginResponse, UserLoginPayload>({
       query: (credentials) => ({
         url: "/login",
@@ -93,20 +90,9 @@ export const authApi = createApi({
         body: credentials,
       }),
       invalidatesTags: ["Auth", "User"],
-      async onQueryStarted(_arg, { queryFulfilled }) {
-        try {
-          const { data } = await queryFulfilled;
-          if (data.success && data.data) {
-            // User data automatically dispatched from baseQuery
-            console.log("Login successful, user data stored");
-          }
-        } catch (error) {
-          console.error("Login onQueryStarted error:", error);
-        }
-      },
     }),
 
-    // Refresh access token
+    // 4. Refresh access token
     refreshToken: builder.mutation<RefreshTokenResponse, void>({
       query: () => ({
         url: "/refresh-token",
@@ -116,7 +102,7 @@ export const authApi = createApi({
       invalidatesTags: ["Auth", "User"],
     }),
 
-    // Social authentication
+    // 5. Social authentication
     socialAuth: builder.mutation<SocialAuthResponse, SocialAuthPayload>({
       query: (data) => ({
         url: "/social-auth",
@@ -126,7 +112,7 @@ export const authApi = createApi({
       invalidatesTags: ["Auth", "User"],
     }),
 
-    // Forgot password
+    // 6. Forgot password
     forgotPassword: builder.mutation<ForgotPasswordResponse,ForgotPasswordPayload>({
       query: (data) => ({
         url: "/forgot-password",
@@ -135,7 +121,7 @@ export const authApi = createApi({
       }),
     }),
 
-    // Reset password
+    // 7.  Reset password
     resetPassword: builder.mutation<ResetPasswordResponse,ResetPasswordPayload>({
       query: (data) => ({
         url: "/reset-password",
@@ -144,7 +130,7 @@ export const authApi = createApi({
       }),
     }),
 
-    // Logout user
+    // 8. Logout user
     logout: builder.mutation<LogoutResponse, void>({
       query: () => ({
         url: "/logout",
@@ -152,20 +138,10 @@ export const authApi = createApi({
         credentials: "include", 
       }),
       invalidatesTags: ["Auth", "User"],
-      async onQueryStarted(_arg, { dispatch, queryFulfilled }) {
-        try {
-          await queryFulfilled;
-          dispatch(logout()); // Redux + LocalStorage clear
-          console.log("Logout successful - local state cleared");
-        } catch (error) {
-          console.error("Logout error:", error);
-          dispatch(logout()); // Redux + LocalStorage clear
-        }
-      },
     }),
 
-    // Update user profile
-    updateProfile: builder.mutation< UpdateProfileResponse, UpdateProfilePayload >({
+    // 9. Update user profile
+    updateProfile: builder.mutation< UpdateUserProfileResponse, UpdateUserProfilePayload >({
       query: (data) => ({
         url: "/update-profile",
         method: "PATCH",
@@ -174,25 +150,46 @@ export const authApi = createApi({
       invalidatesTags: ["User"],
     }),
 
-    // Get user profile
-    getCurrentUser: builder.query<LoginResponse, void>({
-      query: () => ({ url: "/refresh-token", method: "POST" }),
+    // 10. Get all user (access by super-admin and category-admin)
+    getAllUser: builder.query<GetAllUsersResponse, void>({
+      query: () => ({ url: "/all-users", method: "GET", credentials: "include" }),
       providesTags: ["User"],
-      async onQueryStarted(_arg, { dispatch, queryFulfilled }) {
-        try {
-          const { data } = await queryFulfilled;
-          if (data.success && data.data) {
-            dispatch(setUser(data.data)); // Redux + LocalStorage update
-          }
-        } catch (error: any) {
-          if (error?.error?.status === 401) {
-            dispatch(logout());
-          }
-        }
-      },
     }),
+
+    // 11. get all category admins (access by super-admin and category-admin)
+    getAllUsersAndCategoryAdmins: builder.query<GetAllCategoryAdminsResponse, void>({
+      query: () => ({ url: "/category-admins", method: "GET" }),
+      providesTags: ["User"],
+    }),
+
+    // 12. update category admin (access by super-admin)
+    updateCategoryAdmin: builder.mutation<UpdateCategoryAdminResponse, UpdateCategoryAdminPayload>({
+      query: ({_id, category, division}) => ({
+        url: `/category-admin/${_id}`,
+        method: "PATCH",
+        body: { category, division },
+      }),
+      invalidatesTags: ["User"],
+    }),
+
+    // 13. delete category admin (access by super-admin)
+    deleteCategoryAdmin: builder.mutation<DeleteCategoryAdminResponse, string>({
+      query: (id) => ({
+        url: `/category-admin/${id}`,
+        method: "DELETE",
+        credentials: "include",
+      }),
+      invalidatesTags: ["User"],
+    }),
+
+    // 14. get current user
+    getCurrentUser: builder.query<any, void>({
+      query: () => ({ url: "/refresh-token", method: "GET" }),
+      providesTags: ["User"],
+    })
+    
   }),
 });
 
-export const { useRegisterMutation, useActivateUserMutation, useLoginMutation, useRefreshTokenMutation, useSocialAuthMutation, useForgotPasswordMutation, useResetPasswordMutation, useLogoutMutation, useUpdateProfileMutation, useGetCurrentUserQuery } = authApi;
+export const { useRegisterMutation, useActivateUserMutation, useLoginMutation, useRefreshTokenMutation, useSocialAuthMutation, useForgotPasswordMutation, useResetPasswordMutation, useLogoutMutation, useUpdateProfileMutation, useGetAllUserQuery, useGetAllUsersAndCategoryAdminsQuery, useUpdateCategoryAdminMutation, useDeleteCategoryAdminMutation, useGetCurrentUserQuery } = authApi;
 

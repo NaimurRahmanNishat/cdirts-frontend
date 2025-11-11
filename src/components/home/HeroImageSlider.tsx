@@ -25,7 +25,7 @@ const HeroImageSlider = () => {
       <div className="flex animate-slide">
         {[...heroImage, ...heroImage].map((img, index) => (
           <div
-            key={index}
+            key={`{index}-${index}`}
             className="flex-shrink-0 w-[1920px] h-[600px]"
           >
             <img

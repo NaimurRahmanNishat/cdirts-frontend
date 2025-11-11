@@ -13,8 +13,8 @@ const App = () => {
   const { isAuthenticated } = useSelector((state: RootState) => state.auth);
   const { data: userData, isLoading, isError, error } = useGetCurrentUserQuery(undefined, {skip: !isAuthenticated});
     useEffect(() => {
-    if (userData?.success && userData.data) {
-      // Page refresh-এ user data automatically set
+    if (userData?.success && userData?.data) {
+      // Page refresh-এ user data automatically set 
       dispatch(setUser(userData.data));
     }
   }, [userData, dispatch]);
@@ -42,7 +42,7 @@ const App = () => {
   return (
     <div>
       <Header />
-      <main className="container mx-auto max-w-screen-xl px-4 md:px-0">
+      <main className="container mx-auto max-w-screen-xl px-4 md:px-6 lg:px-8 xl:px-0">
         <Outlet />
         <ToastContainer
           position="bottom-right"

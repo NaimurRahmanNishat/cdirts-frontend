@@ -20,8 +20,9 @@ const Gas = () => {
       <p className="text-red-500 text-center">Error loading road issues.</p>
     );
 
+  const totalPages = data?.totalPages ?? 1;
   const issues: Issue[] = data?.issues ?? [];
-  const totalPages = data?.pagination?.pages ?? 1;
+
 
   // Pagination handlers
   const handlePrev = () => setPage((prev) => Math.max(prev - 1, 1));

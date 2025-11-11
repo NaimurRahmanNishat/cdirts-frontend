@@ -8,7 +8,7 @@ const categoryOptions = [
   { value: "electricity", label: "Electricity" },
   { value: "water", label: "Water" },
   { value: "gas", label: "Gas" },
-  { value: "broken-road", label: "Broken Road" },
+  { value: "broken_road", label: "Broken Road" },
   { value: "other", label: "Other" }
 ];
 

@@ -80,7 +80,7 @@ const router = createBrowserRouter([
         element: <Others />,
       },
       {
-        path: "/issues/:issueId",
+        path: "/:issueId",
         element: <SinglePage />,
       },
       {
@@ -119,7 +119,7 @@ const router = createBrowserRouter([
       {
         path: "categoryadmin", // children relative path
         element: (
-          <ProtectedRoute role="categoryadmin">
+          <ProtectedRoute role="category-admin">
             <CategoryAdminDashboardMain />
           </ProtectedRoute>
         ),
@@ -127,7 +127,7 @@ const router = createBrowserRouter([
       {
         path: "status-management", // children relative path
         element: (
-          <ProtectedRoute role="categoryadmin">
+          <ProtectedRoute role="category-admin">
             <StatusManagement />
           </ProtectedRoute>
         ),
@@ -135,7 +135,7 @@ const router = createBrowserRouter([
       {
         path: "user-management", // children relative path
         element: (
-          <ProtectedRoute role="categoryadmin">
+          <ProtectedRoute role="category-admin">
             <UserCategoryAdmin />
           </ProtectedRoute>
         ),
@@ -143,7 +143,7 @@ const router = createBrowserRouter([
       {
         path: "profile-settings", // children relative path
         element: (
-          <ProtectedRoute role="categoryadmin">
+          <ProtectedRoute role="category-admin">
             <CategoryAdminProfile />
           </ProtectedRoute>
         ),
@@ -153,31 +153,31 @@ const router = createBrowserRouter([
       {
         path: "admin", // children relative path
         element: (
-          <ProtectedRoute role="admin">
+          <ProtectedRoute role="super-admin">
             <AdminDashboardMain />
           </ProtectedRoute>
         ),
       },
       {
-        path: "vendor-management", // children relative path
+        path: "admin-management", // children relative path
         element: (
-          <ProtectedRoute role="admin">
+          <ProtectedRoute role="super-admin">
             <VendorManagement />
           </ProtectedRoute>
         ),
       },
       {
-        path: "user-management", // children relative path
+        path: "user-management-admin", // children relative path
         element: (
-          <ProtectedRoute role="admin">
+          <ProtectedRoute role="super-admin">
             <UserManagement />
           </ProtectedRoute>
         ),
       },
       {
-        path: "settings", // children relative path
+        path: "profile-settings", // children relative path
         element: (
-          <ProtectedRoute role="admin">
+          <ProtectedRoute role="super-admin">
             <Settings />
           </ProtectedRoute>
         ),

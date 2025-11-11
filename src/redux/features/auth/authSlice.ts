@@ -1,8 +1,9 @@
+// src/redux/features/auth/authSlice.ts
+import type { TAuthUser } from "@/types/authType";
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
-import type { TUser } from "@/types";
 
 export interface AuthState {
-  user: TUser | null;
+  user: TAuthUser | null;
   isAuthenticated: boolean;
   loading: boolean;
 }
@@ -19,7 +20,7 @@ const authSlice = createSlice({
   name: "auth",
   initialState,
   reducers: {
-    setUser: (state, action: PayloadAction<TUser | null>) => {
+    setUser: (state, action: PayloadAction<TAuthUser | null>) => {
       state.user = action.payload;
       state.isAuthenticated = !!action.payload;
       if (action.payload) {

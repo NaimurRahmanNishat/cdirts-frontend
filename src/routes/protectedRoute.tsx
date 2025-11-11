@@ -1,10 +1,12 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useSelector, useDispatch } from "react-redux";
 import { Navigate, useLocation } from "react-router-dom";
 import { useEffect, useState } from "react";
 import type { RootState } from "@/redux/store";
 import { setUser, logout } from "@/redux/features/auth/authSlice";
-import type { Role } from "@/types";
 import { useRefreshTokenMutation } from "@/redux/features/auth/authApi";
+import { toast } from "react-toastify";
+import type { Role } from "@/types/authType";
 
 type Props = {
   children: React.ReactNode;
@@ -12,7 +14,7 @@ type Props = {
 };
 
 const ProtectedRoute = ({ children, role }: Props) => {
-  const { user } = useSelector((state: RootState) => state.auth);
+  const { user }: any = useSelector((state: RootState) => state.auth);
   const [checking, setChecking] = useState(true);
   const [refreshToken] = useRefreshTokenMutation();
   const dispatch = useDispatch();
@@ -42,13 +44,8 @@ const ProtectedRoute = ({ children, role }: Props) => {
   if (checking)
     return <div className="text-center p-5">Checking authentication...</div>;
 
-  if (!user) {
-    alert("Please login first");
-    return <Navigate to="/login" state={{ from: location }} replace />;
-  }
-
   if (role && user.role !== role) {
-    alert("You are not authorized to access this page");
+    toast.error("You are not authorized to access this page");
     return <Navigate to="/login" state={{ from: location }} replace />;
   }
 

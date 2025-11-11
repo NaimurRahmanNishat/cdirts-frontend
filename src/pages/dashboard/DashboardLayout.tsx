@@ -10,16 +10,11 @@ import CategoryAdminDashboard from "./CategoryAdminDashboard";
 const DashboardLayout = () => {
   const { user } = useSelector((state: RootState) => state.auth);
 
-  if (!user) {
-    alert("You must be logged in to view this page.");
-    return <Navigate to="/login" replace />;
-  }
-
   const renderDashboard = () => {
     switch (user?.role) {
-      case "admin":
+      case "super-admin":
         return <AdminDashboard />;
-      case "categoryadmin":
+      case "category-admin":
         return <CategoryAdminDashboard />;
       case "user":
         return <UserDashboard />;

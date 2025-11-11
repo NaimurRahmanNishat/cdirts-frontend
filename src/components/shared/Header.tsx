@@ -11,7 +11,7 @@ const Header = () => {
 
   return (
     <header className="bg-white shadow-md sticky top-0 left-0 w-full z-50">
-      <div className="max-w-7xl mx-auto flex justify-between items-center px-4 lg:px-0 py-3">
+      <div className="max-w-7xl mx-auto flex justify-between items-center px-4 md:px-6 lg:px-8 xl:px-0 py-3">
         {/* Logo */}
         <Link to="/" className="flex items-center gap-2">
           <img src={logo} alt="Logo" className="w-14 h-14 object-contain" />

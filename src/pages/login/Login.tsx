@@ -30,7 +30,7 @@ const Login = () => {
       const res = await login(data).unwrap();
       
       if (res.success && res.data) {
-        const { ...userWithoutSensitiveData } = res.data as any;
+        const { ...userWithoutSensitiveData } = res.data;
         dispatch(setUser(userWithoutSensitiveData));
         toast.success(res.message || "Login Successfully!");
         navigate("/");
@@ -39,11 +39,7 @@ const Login = () => {
       }
     } catch (error: any) {
       console.error("Login error:", error);
-      setErrorMessage(
-        error?.data?.message || 
-        error?.message || 
-        "Invalid credentials. Please try again."
-      );
+      setErrorMessage(error?.data?.message || error?.message || "Invalid credentials. Please try again.");
     }
   };
 
