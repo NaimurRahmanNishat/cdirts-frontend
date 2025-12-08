@@ -1,65 +1,38 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
+
 // src/redux/features/auth/authApi.ts
 import { getBaseUrl } from "@/utils/getBaseUrl";
-import { createApi, fetchBaseQuery, type BaseQueryFn, type FetchArgs, type BaseQueryApi } from "@reduxjs/toolkit/query/react";
-import { setUser, logout, type AuthState } from "@/redux/features/auth/authSlice";
-import type { ActivateUserPayload, ActivateUserResponse, DeleteCategoryAdminResponse, ForgotPasswordPayload, ForgotPasswordResponse, GetAllCategoryAdminsResponse, GetAllUsersResponse, LoginResponse, LogoutResponse, RefreshTokenResponse, RegisterResponse, ResetPasswordPayload, ResetPasswordResponse, SocialAuthPayload, SocialAuthResponse, UpdateCategoryAdminPayload, UpdateCategoryAdminResponse, UpdateUserProfilePayload, UpdateUserProfileResponse, UserLoginPayload, UserRegisterPayload } from "@/types/authType";
-
-const baseQuery = fetchBaseQuery({
-  baseUrl: `${getBaseUrl()}/api/v1/auth`,
-  credentials: "include",
-  prepareHeaders: (headers) => {
-    headers.set("Content-Type", "application/json");
-    return headers;
-  },
-});
-
-const baseQueryWithReauth: BaseQueryFn<FetchArgs, BaseQueryApi> = async (args, api, extraOptions): Promise<any> => {
-  let result = await baseQuery(args, api, extraOptions);
-
-  const skipReauthUrls = ["/login", "/register", "/activate-user", "/refresh-token", "/forgot-password", "/reset-password"];
-  const url = typeof args === "string" ? args : args.url;
-
-  // If only user login and url skip if not then refresh 
-  const state = api.getState() as { auth: AuthState };
-  const isAuthenticated = state.auth.isAuthenticated;
-
-  if (result?.error && result?.error.status === 401 && !skipReauthUrls.includes(url) && isAuthenticated) {
-    console.log("Access token expired, attempting refresh...");
-
-    try {
-      const refreshResult = await baseQuery(
-        { url: "/refresh-token", method: "POST" },
-        api,
-        extraOptions
-      );
-
-      if (refreshResult.data) {
-        const refreshData = refreshResult.data as RefreshTokenResponse;
-
-        if (refreshData.success && refreshData.data) {
-          console.log("Token refreshed successfully");
-          api.dispatch(setUser(refreshData.data));
-          result = await baseQuery(args, api, extraOptions);
-        } else {
-          console.error("Refresh token invalid, logging out");
-          api.dispatch(logout());
-        }
-      } else {
-        console.error("Refresh token failed, logging out");
-        api.dispatch(logout());
-      }
-    } catch (error) {
-      console.error("Refresh token error:", error);
-      api.dispatch(logout());
-    }
-  }
-  return result;
-};
+import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
+import type {
+  ActivateUserPayload,
+  ActivateUserResponse,
+  DeleteCategoryAdminResponse,
+  EditProfileByIdPayload,
+  EditProfileByIdResponse,
+  ForgotPasswordPayload,
+  ForgotPasswordResponse,
+  GetAllCategoryAdminsResponse,
+  GetAllUsersResponse,
+  LoginResponse,
+  LogoutResponse,
+  RefreshTokenResponse,
+  RegisterResponse,
+  ResetPasswordPayload,
+  ResetPasswordResponse,
+  SocialAuthPayload,
+  SocialAuthResponse,
+  TAuthUser,
+  UpdateCategoryAdminPayload,
+  UpdateCategoryAdminResponse,
+  UserLoginPayload,
+  UserRegisterPayload,
+} from "@/types/authType";
 
 export const authApi = createApi({
   reducerPath: "authApi",
-  baseQuery: baseQueryWithReauth,
+  baseQuery: fetchBaseQuery({
+    baseUrl: `${getBaseUrl()}/api/v1/auth`,
+    credentials: "include", // Cookie send
+  }),
   tagTypes: ["Auth", "User"],
   endpoints: (builder) => ({
     // 1. Register user
@@ -90,16 +63,40 @@ export const authApi = createApi({
         body: credentials,
       }),
       invalidatesTags: ["Auth", "User"],
+      async onQueryStarted(_arg, { dispatch, queryFulfilled }) {
+        try {
+          const { data } = await queryFulfilled;
+          if (data?.data) {
+            // Redux store update after user save
+            dispatch({ type: "auth/setUser", payload: data.data });
+          }
+        } catch (error) {
+          console.error("Login failed:", error);
+        }
+      },
     }),
 
     // 4. Refresh access token
-    refreshToken: builder.mutation<RefreshTokenResponse, void>({
-      query: () => ({
+    refreshToken: builder.mutation<RefreshTokenResponse, { userId: string }>({
+      query: (data) => ({
         url: "/refresh-token",
         method: "POST",
-        credentials: "include",
+        body: data,
       }),
-      invalidatesTags: ["Auth", "User"],
+      invalidatesTags: ["Auth"],
+      async onQueryStarted(_arg, { dispatch, queryFulfilled }) {
+        try {
+          const { data } = await queryFulfilled;
+          if (data?.data) {
+            // Redux store update
+            dispatch({ type: "auth/setUser", payload: data.data });
+          }
+        } catch (err) {
+          // Refresh fail then logout
+          console.error("Token refresh failed:", err);
+          dispatch({ type: "auth/logout" });
+        }
+      },
     }),
 
     // 5. Social authentication
@@ -135,15 +132,15 @@ export const authApi = createApi({
       query: () => ({
         url: "/logout",
         method: "POST",
-        credentials: "include", 
+        credentials: "include",
       }),
       invalidatesTags: ["Auth", "User"],
     }),
 
-    // 9. Update user profile
-    updateProfile: builder.mutation< UpdateUserProfileResponse, UpdateUserProfilePayload >({
-      query: (data) => ({
-        url: "/update-profile",
+    // 9. edit profile by id - FIXED WITH PROPER STATE MANAGEMENT
+    editProfileById: builder.mutation<EditProfileByIdResponse,EditProfileByIdPayload>({
+      query: ({id, ...data }) => ({
+        url: `/update-profile/${id}`,
         method: "PATCH",
         body: data,
       }),
@@ -152,7 +149,11 @@ export const authApi = createApi({
 
     // 10. Get all user (access by super-admin and category-admin)
     getAllUser: builder.query<GetAllUsersResponse, void>({
-      query: () => ({ url: "/all-users", method: "GET", credentials: "include" }),
+      query: () => ({
+        url: "/all-users",
+        method: "GET",
+        credentials: "include",
+      }),
       providesTags: ["User"],
     }),
 
@@ -163,8 +164,8 @@ export const authApi = createApi({
     }),
 
     // 12. update category admin (access by super-admin)
-    updateCategoryAdmin: builder.mutation<UpdateCategoryAdminResponse, UpdateCategoryAdminPayload>({
-      query: ({_id, category, division}) => ({
+    updateCategoryAdmin: builder.mutation<UpdateCategoryAdminResponse,UpdateCategoryAdminPayload>({
+      query: ({ _id, category, division }) => ({
         url: `/category-admin/${_id}`,
         method: "PATCH",
         body: { category, division },
@@ -182,14 +183,31 @@ export const authApi = createApi({
       invalidatesTags: ["User"],
     }),
 
-    // 14. get current user
-    getCurrentUser: builder.query<any, void>({
-      query: () => ({ url: "/refresh-token", method: "GET" }),
+    // 14. get current user profile
+    getCurrentUser: builder.query<{success: boolean; message: string; data: TAuthUser}, void>({
+      query: () => ({
+        url: "/current-user",
+        method: "GET",
+        credentials: "include",
+      }),
       providesTags: ["User"],
-    })
-    
+    }),
   }),
 });
 
-export const { useRegisterMutation, useActivateUserMutation, useLoginMutation, useRefreshTokenMutation, useSocialAuthMutation, useForgotPasswordMutation, useResetPasswordMutation, useLogoutMutation, useUpdateProfileMutation, useGetAllUserQuery, useGetAllUsersAndCategoryAdminsQuery, useUpdateCategoryAdminMutation, useDeleteCategoryAdminMutation, useGetCurrentUserQuery } = authApi;
-
+export const {
+  useRegisterMutation,
+  useActivateUserMutation,
+  useLoginMutation,
+  useRefreshTokenMutation,
+  useSocialAuthMutation,
+  useForgotPasswordMutation,
+  useResetPasswordMutation,
+  useLogoutMutation,
+  useEditProfileByIdMutation,
+  useGetAllUserQuery,
+  useGetAllUsersAndCategoryAdminsQuery,
+  useUpdateCategoryAdminMutation,
+  useDeleteCategoryAdminMutation,
+  useGetCurrentUserQuery,
+} = authApi;

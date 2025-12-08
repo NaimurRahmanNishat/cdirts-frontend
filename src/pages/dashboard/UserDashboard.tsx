@@ -8,6 +8,7 @@ const navItems = [
   { path: "/dashboard/create-issue", label: "Create Issue" },
   { path: "/dashboard/my-issues", label: "My Issues" },
   { path: "/dashboard/profile-settings", label: "Profile Settings" },
+  { path: "/dashboard/emergency", label: "Emergency" },
 ];
 
 const UserDashboard = () => {

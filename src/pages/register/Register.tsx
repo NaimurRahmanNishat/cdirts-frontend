@@ -14,7 +14,7 @@ import { toast } from "sonner";
 const registerSchema = z
   .object({
     name: z.string().min(3, "Name must be at least 3 characters"),
-    email: z.string().email("Invalid email"),
+    email: z.string().email("Invalid email address"),
     password: z.string().min(6, "Password must be at least 6 characters"),
     confirmPassword: z.string().min(6, "Confirm Password required"),
     phone: z.string().min(11, "Phone number too short"),
@@ -54,6 +54,7 @@ const Register = () => {
   // --- Form Submission ---
 
   const onSubmit = async (data: RegisterFormValues) => {
+    console.log(data);
     try {
       const res = await registerUser({
         name: data.name,
@@ -62,6 +63,10 @@ const Register = () => {
         phone: data.phone,
         nid: data.nid
       }).unwrap();
+      console.log("📥 Full API Response:", res);
+      console.log("✅ Success:", res?.success);
+      console.log("🔑 Token:", res?.token);
+      console.log("💬 Message:", res?.message);
 
       if (res.success && res.token) {
         localStorage.setItem("activationToken", res.token);
@@ -133,3 +138,5 @@ const Register = () => {
 }
 
 export default Register;
+
+

@@ -2,7 +2,7 @@
 import { useLoginMutation } from "@/redux/features/auth/authApi";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Eye, EyeOff, Lock, Mail, AlertCircle } from "lucide-react";
 import { useAppDispatch } from "@/redux/hooks";
 import { setUser } from "@/redux/features/auth/authSlice";
@@ -17,23 +17,24 @@ type LoginInputs = {
 const Login = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
+  const location = useLocation();
   const [errorMessage, setErrorMessage] = useState<string>("");
   const [showPassword, setShowPassword] = useState<boolean>(false);
 
   const { register, handleSubmit, formState: { errors } } = useForm<LoginInputs>();
 
   const [login, { isLoading: isLoginLoading }] = useLoginMutation();
+  const from = location.state?.from?.pathname || "/";
 
   const onSubmit = async (data: LoginInputs) => {
     try {
       setErrorMessage(""); 
       const res = await login(data).unwrap();
-      
       if (res.success && res.data) {
         const { ...userWithoutSensitiveData } = res.data;
         dispatch(setUser(userWithoutSensitiveData));
         toast.success(res.message || "Login Successfully!");
-        navigate("/");
+        navigate(from, { replace: true });
       } else {
         setErrorMessage(res.message || "Login failed");
       }

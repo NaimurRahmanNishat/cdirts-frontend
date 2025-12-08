@@ -1,5 +1,3 @@
-const  getBaseUrl = () => {
-    return typeof window !== 'undefined' ? "http://localhost:5000" : "http://localhost:5000"
+export const getBaseUrl = () => {
+    return import.meta.env.VITE_BACKEND_URL;
 }
-
-export { getBaseUrl };

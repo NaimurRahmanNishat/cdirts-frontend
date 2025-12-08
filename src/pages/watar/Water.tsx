@@ -22,7 +22,6 @@ const Water = () => {
 
   const totalPages = data?.totalPages ?? 1;
   const issues: Issue[] = data?.issues ?? [];
-  console.log(issues);
 
   // Pagination handlers
   const handlePrev = () => setPage((prev) => Math.max(prev - 1, 1));

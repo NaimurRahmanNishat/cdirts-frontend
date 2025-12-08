@@ -5,6 +5,8 @@ import authReducer from './features/auth/authSlice';
 import { issueApi } from './features/issue/issuApi';
 import statsApi from './features/stats/statsApi';
 import { reviewApi } from './features/reviews/reviewApi';
+import { emergencyApi } from './features/emergency/emergencyApi';
+import notificationReducer from './features/emergency/notificationSlice';
 
 export const store = configureStore({
   reducer: {
@@ -12,9 +14,11 @@ export const store = configureStore({
     auth: authReducer,
     [issueApi.reducerPath]: issueApi.reducer,
     [reviewApi.reducerPath]: reviewApi.reducer,
+    [emergencyApi.reducerPath]: emergencyApi.reducer,
+    notification: notificationReducer,
     [statsApi.reducerPath]: statsApi.reducer
   },
-  middleware:(getDefaultMiddleware) => getDefaultMiddleware().concat(authApi.middleware, issueApi.middleware, reviewApi.middleware, statsApi.middleware),
+  middleware:(getDefaultMiddleware) => getDefaultMiddleware().concat(authApi.middleware, issueApi.middleware, reviewApi.middleware, emergencyApi.middleware, statsApi.middleware),
 });
 
 // Get the type of our store variable

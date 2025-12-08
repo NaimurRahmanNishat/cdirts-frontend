@@ -1,6 +1,20 @@
-import type { IReview } from "@/types";
-import { getBaseUrl } from "@/utils/getBaseUrl";
+/* eslint-disable @typescript-eslint/no-explicit-any */
+// redux/features/review/reviewApi.ts
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
+import { getBaseUrl } from "@/utils/getBaseUrl";
+import type {
+  ReviewsResponse,
+  CreateReviewPayload,
+  ReplyToReviewPayload,
+  EditReviewPayload,
+  DeleteReviewPayload,
+} from "@/types/review";
+
+interface GetReviewsParams {
+  issueId: string;
+  page?: number;
+  limit?: number;
+}
 
 export const reviewApi = createApi({
   reducerPath: "reviewApi",
@@ -8,34 +22,74 @@ export const reviewApi = createApi({
     baseUrl: `${getBaseUrl()}/api/v1/review`,
     credentials: "include",
   }),
-  tagTypes: ["Review"],
+  tagTypes: ["Reviews"],
   endpoints: (builder) => ({
-    // Create Review (comment)
-    createReview: builder.mutation<IReview, { issueId: string; comment: string }>({
-      query: ({ issueId, comment }) => ({
+    // Get reviews for a specific issue
+    getReviewsByIssue: builder.query<ReviewsResponse, GetReviewsParams>({
+      query: ({ issueId, page = 1, limit = 10 }) => ({
+        url: `/issue/${issueId}`,
+        params: { page, limit },
+      }),
+      providesTags: (_result, _error, { issueId }) => [
+        { type: "Reviews", id: issueId },
+      ], 
+    }),
+
+    // Create a new review
+    createReview: builder.mutation<any, { issueId: string; data: CreateReviewPayload }>({
+      query: ({ issueId, data }) => ({
         url: `/create-review/${issueId}`,
         method: "POST",
-        body: { comment },
+        body: data,
       }),
-      invalidatesTags: (_result, _error, { issueId }) => [{ type: "Review", id: issueId }],
+      invalidatesTags: (_result, _error, { issueId }) => [
+        { type: "Reviews", id: issueId },
+      ],
     }),
 
-    // Add Reply
-    addReply: builder.mutation<IReview, { reviewId: string; comment: string; issueId: string }>({
-      query: ({ reviewId, comment }) => ({
-        url: `/add-reply/${reviewId}`,
+    // Reply to a review
+    replyToReview: builder.mutation<any, { reviewId: string; data: ReplyToReviewPayload }>({
+      query: ({ reviewId, data }) => ({
+        url: `/reply/${reviewId}`,
         method: "POST",
-        body: { comment },
+        body: data,
       }),
-      invalidatesTags: (_result, _error, { issueId }) => [{ type: "Review", id: issueId }],
+      invalidatesTags: ["Reviews"],
     }),
 
-    // Get all Reviews by Issue
-    getReviewsByIssue: builder.query<IReview[], string>({
-      query: (issueId) => `/issue/${issueId}`,
-      providesTags: (_result, _error, issueId) => [{ type: "Review", id: issueId }],
+    // Edit a review or reply
+    editReview: builder.mutation<any, { reviewId: string; data: EditReviewPayload }>({
+      query: ({ reviewId, data }) => ({
+        url: `/edit-review/${reviewId}`,
+        method: "PUT",
+        body: data,
+      }),
+      invalidatesTags: ["Reviews"],
+    }),
+
+    // Delete a review or reply
+    deleteReview: builder.mutation<any, { reviewId: string; data?: DeleteReviewPayload }>({
+      query: ({ reviewId, data }) => ({
+        url: `/${reviewId}`,
+        method: "DELETE",
+        body: data || {},
+      }),
+      invalidatesTags: ["Reviews"],
+    }),
+
+    // Get all reviews for admin
+    getAllReviewsForAdmin: builder.query<any, void>({
+      query: () => "/",
+      providesTags: ["Reviews"],
     }),
   }),
 });
 
-export const { useCreateReviewMutation, useAddReplyMutation, useGetReviewsByIssueQuery } = reviewApi;
+export const {
+  useGetReviewsByIssueQuery,
+  useCreateReviewMutation,
+  useReplyToReviewMutation,
+  useEditReviewMutation,
+  useDeleteReviewMutation,
+  useGetAllReviewsForAdminQuery,
+} = reviewApi;

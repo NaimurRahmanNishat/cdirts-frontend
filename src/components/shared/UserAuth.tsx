@@ -71,7 +71,7 @@ const UserAuth = () => {
 
       {/* Dropdown */}
       <div
-        className={`absolute right-0 mt-3 w-52 bg-white shadow-lg rounded-xl border border-gray-400 p-4 z-50 transform transition-all duration-300 origin-top-right ${
+        className={`absolute right-0 top-12 w-40 rounded-sm bg-white shadow z-50 transform transition-all duration-300 origin-top-right ${
           isOpen
             ? "opacity-100 scale-100 translate-y-0"
             : "opacity-0 scale-95 pointer-events-none -translate-y-2"
@@ -84,7 +84,7 @@ const UserAuth = () => {
                 handleProfileClick();
                 setIsOpen(false);
               }}
-              className="text-left cursor-pointer px-3 py-2 rounded-md hover:bg-[#f4f4f4] transition font-medium"
+              className="text-left cursor-pointer px-3 py-2 rounded-sm hover:bg-[#d4d3d3] transition font-medium"
             >
               Profile
             </button>
@@ -93,24 +93,24 @@ const UserAuth = () => {
                 handleLogout();
                 setIsOpen(false);
               }}
-              className="text-left cursor-pointer px-3 py-2 rounded-md hover:bg-red-50 hover:text-red-600 transition font-medium"
+              className="text-left cursor-pointer px-3 py-2 rounded-md hover:bg-red-100 hover:text-red-600 transition font-medium"
             >
               Logout
             </button>
           </div>
         ) : (
-          <div className="flex flex-col space-y-3 text-gray-700">
+          <div className="flex flex-col space-y-1 text-gray-700">
             <Link
               to="/login"
               onClick={() => setIsOpen(false)}
-              className="px-3 py-2 rounded-md hover:bg-[#f4f4f4] transition font-medium"
+              className="px-3 py-2 rounded-md hover:bg-[#d4d3d3] transition font-medium"
             >
               Login
             </Link>
             <Link
               to="/register"
               onClick={() => setIsOpen(false)}
-              className="px-3 py-2 rounded-md hover:bg-[#f4f4f4] transition font-medium"
+              className="px-3 py-2 rounded-md hover:bg-[#d4d3d3] transition font-medium"
             >
               Register
             </Link>

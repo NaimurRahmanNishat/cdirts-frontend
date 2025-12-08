@@ -1,12 +1,10 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import { useSelector, useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
 import { Navigate, useLocation } from "react-router-dom";
-import { useEffect, useState } from "react";
 import type { RootState } from "@/redux/store";
-import { setUser, logout } from "@/redux/features/auth/authSlice";
-import { useRefreshTokenMutation } from "@/redux/features/auth/authApi";
 import { toast } from "react-toastify";
 import type { Role } from "@/types/authType";
+import { useAutoRefreshToken } from "@/hooks/autoRefreshToken";
+import { useSocket } from "@/hooks/useSocket";
 
 type Props = {
   children: React.ReactNode;
@@ -14,35 +12,18 @@ type Props = {
 };
 
 const ProtectedRoute = ({ children, role }: Props) => {
-  const { user }: any = useSelector((state: RootState) => state.auth);
-  const [checking, setChecking] = useState(true);
-  const [refreshToken] = useRefreshTokenMutation();
-  const dispatch = useDispatch();
+    // Initialize WebSocket connection
+    useSocket();        
+  
+    // Auto refresh token hook
+    useAutoRefreshToken(); 
+  const { user } = useSelector((state: RootState) => state.auth);
   const location = useLocation();
 
-  useEffect(() => {
-    const checkAuth = async () => {
-      try {
-        if (!user) {
-          const res = await refreshToken().unwrap();
-          if (res?.data) {
-            dispatch(setUser(res.data)); // refresh token and set user
-          } else {
-            throw new Error("No user data returned from refresh");
-          }
-        }
-      } catch (error) {
-        console.error("checkAuth error:", error);
-        dispatch(logout());
-      } finally {
-        setChecking(false);
-      }
-    };
-    checkAuth();
-  }, [user, dispatch, refreshToken]);
-
-  if (checking)
-    return <div className="text-center p-5">Checking authentication...</div>;
+  if (!user) {
+    toast.error("You must be logged in to view this page.");
+    return <Navigate to="/login" state={{ from: location }} replace />;
+  }
 
   if (role && user.role !== role) {
     toast.error("You are not authorized to access this page");

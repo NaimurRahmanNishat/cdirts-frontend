@@ -32,6 +32,20 @@ export interface UserStatsResponse {
   };
 }
 
+// Category Admin Stats Response
+export interface CategoryAdminStatsResponse {
+  success: boolean;
+  message: string;
+  data: {
+    category: string;
+    totalIssues: number;
+    pendingIssues: number;
+    inProgressIssues: number;
+    solvedIssues: number;
+    monthlyPostIssue: [];
+  };
+}
+
 
 const statsApi = createApi({
   reducerPath: "statsApi",
@@ -58,8 +72,17 @@ const statsApi = createApi({
       }),
       providesTags: ["Stats"],
     }),
+
+    // Get category admin stats (no args)
+    getCategoryAdminStats: builder.query<CategoryAdminStatsResponse, void>({
+      query: () => ({
+        url: `/category-admin-stats`,
+        method: "GET",
+      }),
+      providesTags: ["Stats"],
+    }),
   }),
 });
 
-export const { useGetAdminStatsQuery, useGetUserStatsQuery } = statsApi;
+export const { useGetAdminStatsQuery, useGetUserStatsQuery, useGetCategoryAdminStatsQuery } = statsApi;
 export default statsApi;

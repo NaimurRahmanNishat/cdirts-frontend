@@ -13,6 +13,7 @@ const navItems: INavItem[] = [
   { path: "/dashboard/status-management", label: "Status Management" },
   { path: "/dashboard/user-management", label: "User Management" },
   { path: "/dashboard/profile-settings", label: "Profile Settings" },
+  { path: "/dashboard/receive-message", label: "Receive Massage" },
 ];
 
 const CategoryAdminDashboard = () => {

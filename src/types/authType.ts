@@ -1,26 +1,33 @@
 export type Role = "user" | "category-admin" | "super-admin";
 export type CategoryType ="broken-road" | "water" | "gas" | "electricity" | "other";
 export type DivisionType = "Dhaka" | "Chattogram" | "Rajshahi" | "Khulna" | "Barishal" | "Sylhet" | "Rangpur" | "Mymensingh";
+export type ImageType = { public_id: string; url: string };
 
 
 export interface TAuthUser {
   _id: string;
   name: string;
   email: string;
+  password: string;
   phone?: string;
   nid?: string;
   isVerified: boolean;
-  role?: Role;
-  category?: CategoryType;
-  avatar?: {
-    public_id: string;
-    url: string;
-  };
-  resetPasswordOtp?: string;
-  resetPasswordOtpExpiry?: Date;
+  role: Role;
   division?: DivisionType;
-  createdAt?: string;
-  updatedAt?: string;
+  category?: CategoryType;
+  avatar?: ImageType;
+  nidPic?: ImageType[];
+  refreshToken?: string | null;
+  refreshTokenExpiry?: Date | null;
+  activationCode?: string | null;
+  activationCodeExpiry?: Date | null;
+  lastActivationCodeSentAt?: Date | null;
+  resetPasswordOtp?: string | null;
+  resetPasswordOtpExpiry?: Date | null;
+  profession?: string;
+  zipCode?: string;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 
@@ -124,11 +131,23 @@ export interface LogoutResponse {
 }
 
 
-// 9. update user profile
-export interface UpdateUserProfileResponse {
+// 9. edit profile by id
+export interface EditProfileByIdResponse {
   success: boolean;
   message: string;
-  user: TAuthUser;  
+  data: TAuthUser;
+}
+
+export interface EditProfileByIdPayload {
+  id: string;
+  name?: string;
+  email?: string;
+  zipCode?: string;
+  profession?: string;
+  phone?: string;
+  avatar?: ImageType;
+  nidPic?: ImageType[]; 
+  division?: DivisionType;
 }
 
 export interface UpdateUserProfilePayload {

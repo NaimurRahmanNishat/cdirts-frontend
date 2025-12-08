@@ -28,6 +28,8 @@ import StatusManagement from "@/pages/dashboard/categoryadmin/status-management/
 import CategoryAdminProfile from "@/pages/dashboard/categoryadmin/profile/CategoryAdminProfile";
 import UserCategoryAdmin from "@/pages/dashboard/categoryadmin/user-management/UserCategoryAdmin";
 import Register from "@/pages/register/Register";
+import EmergencyMessage from "@/pages/dashboard/user/emergency/EmergencyMessage";
+import ReceiveMessage from "@/pages/dashboard/categoryadmin/receive-message/ReceiveMessage";
 
 const router = createBrowserRouter([
   {
@@ -38,26 +40,6 @@ const router = createBrowserRouter([
       {
         path: "/",
         element: <Home />,
-      },
-      {
-        path: "/register",
-        element: <Register />,
-      },
-      {
-        path: "/register-otp",
-        element: <ActivateUser />,
-      },
-      {
-        path: "/login",
-        element: <Login />,
-      },
-      {
-        path: "/forgot-password",
-        element: <ForgotPassword />,
-      },
-      {
-        path: "/reset-password",
-        element: <ResetPassword />,
       },
       {
         path: "/electricity",
@@ -81,13 +63,37 @@ const router = createBrowserRouter([
       },
       {
         path: "/:issueId",
-        element: <SinglePage />,
+        element: (
+          <ProtectedRoute>
+            <SinglePage />
+          </ProtectedRoute>
+        ),
       },
       {
         path: "/location/:division",
         element: <LocationPage />,
       },
     ],
+  },
+  {
+    path: "/register",
+    element: <Register />,
+  },
+  {
+    path: "/register-otp",
+    element: <ActivateUser />,
+  },
+  {
+    path: "/login",
+    element: <Login />,
+  },
+  {
+    path: "/forgot-password",
+    element: <ForgotPassword />,
+  },
+  {
+    path: "/reset-password",
+    element: <ResetPassword />,
   },
   {
     path: "/dashboard",
@@ -113,6 +119,10 @@ const router = createBrowserRouter([
       {
         path: "profile-settings", // children relative path
         element: <ProfileSettings />,
+      },
+      {
+        path: "emergency", // children relative path
+        element: <EmergencyMessage />,
       },
 
       // category admin routes
@@ -145,6 +155,14 @@ const router = createBrowserRouter([
         element: (
           <ProtectedRoute role="category-admin">
             <CategoryAdminProfile />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "receive-message", // children relative path
+        element: (
+          <ProtectedRoute role="category-admin">
+            <ReceiveMessage />
           </ProtectedRoute>
         ),
       },
